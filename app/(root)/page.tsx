@@ -2,7 +2,10 @@
 export default function Home() {
   return (
     <>
-      <h1 className=" text-sm">Hello </h1>
+    <section className="pink_container">
+      <h1 className="heading">Collection of the news of Civil War in Myanmar</h1>
+      <p className="sub-heading !max-w-3xl">What happening in Myanmar during the Civil War</p>
+    </section>
     </>
   );
 }
