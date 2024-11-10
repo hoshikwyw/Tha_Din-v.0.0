@@ -6,9 +6,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { Button } from './ui/button'
+import { Author, News } from '@/sanity/types'
+
+export type StartupTypeCard = Omit<News, 'author'> & {author?: Author}
 
 const NewsCard = ({post}: {post: StartupTypeCard}) => {
-    const {_createdAt, views, author: {_id: authorId, name}, title, category, _id, image, description} = post
+    const {_createdAt, views, author, title, category, _id, image, description} = post
 
   return (
     <li className='startup-card group'>
@@ -25,25 +28,27 @@ const NewsCard = ({post}: {post: StartupTypeCard}) => {
         </div>
         <div className="flex-between mt-5 gap-5">
                 <div className="flex-1">
-                    <Link href={`/user/${authorId}`}>
+                    <Link href={`/user/${author?._id}}`}>
                         <p className="text-16-medium line-clamp-1">
-                            {name}
+                            {author?.name}
                         </p>
                     </Link>
                     <Link href={`/news/${_id}`}>
                         <h3 className="text-26-semibold line-clamp-1">{title}</h3>
                     </Link>
                 </div>
-                <Link href={`/user/${authorId}`}>
+                <Link href={`/user/${author?._id}}`}>
                     <Image src="https://placehold.co/48" alt="placeholder" width={48} height={48} className="rounded-full" />
                 </Link>
         </div>
         <Link href={`/news/${_id}`}>
             <p className="startup-card_desc">{description}</p>
-            <Image src={image} alt='Image' className='startup-card_img' width={500} height={500} />
+            {image && (
+                <Image src={image} alt='Image' className='startup-card_img' width={500} height={500} />
+            )}
         </Link>
         <div className="flex-between gap-3 mt-5">
-            <Link href={`/?query=${category.toLowerCase()}`}>
+            <Link href={`/?query=${category?.toLowerCase()}`}>
                 <p className="text-16-medium">{category}</p>
             </Link>
             <Button className='startup-card_btn' asChild>
