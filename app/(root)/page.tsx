@@ -1,24 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import NewsCard from "@/components/NewsCard";
+import NewsCard,{StartupTypeCard} from "@/components/NewsCard";
 import SearchForm from "@/components/SearchForm";
+import { client } from "@/sanity/lib/client";
+import { newsQuery } from "@/sanity/lib/queries";
 
 export default async function Home({searchParams}: {
   searchParams: Promise<{ query: string }>
 }) {
     const query = (await searchParams).query
 
-    const posts = [
-      {
-        _createdAt: new Date(),
-        views: 55,
-        author: {_id: 1,name: "Oro"},
-        _id: 1,
-        description: "This is a description",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE7NOCw5TXI8NQAQ6cswIYCuRVE9TtjAbggQ&s",
-        category: "Weather",
-        title: "Today Weather News"
-      }
-    ]
+    const posts = await client.fetch(newsQuery)
+
+    // const posts = [
+    //   {
+    //     _createdAt: new Date(),
+    //     views: 55,
+    //     author: {_id: 1,name: "Oro"},
+    //     _id: 1,
+    //     description: "This is a description",
+    //     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE7NOCw5TXI8NQAQ6cswIYCuRVE9TtjAbggQ&s",
+    //     category: "Weather",
+    //     title: "Today Weather News"
+    //   }
+    // ]
 
   return (
     <>
@@ -33,7 +37,7 @@ export default async function Home({searchParams}: {
       </p>
       <ul className="mt-7 card_grid">
         {posts?.length > 0 ? (
-            posts.map((post: StartupCardType, index: number) => (
+            posts.map((post: StartupTypeCard, index: number) => (
               <NewsCard key={post?._id} post={post} />
             ))
         ) : (
