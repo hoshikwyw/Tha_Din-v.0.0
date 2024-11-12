@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import NewsCard,{StartupTypeCard} from "@/components/NewsCard";
 import SearchForm from "@/components/SearchForm";
-import { client } from "@/sanity/lib/client";
+import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 import { newsQuery } from "@/sanity/lib/queries";
 
 export default async function Home({searchParams}: {
@@ -9,7 +9,8 @@ export default async function Home({searchParams}: {
 }) {
     const query = (await searchParams).query
 
-    const posts = await client.fetch(newsQuery)
+    // const posts = await client.fetch(newsQuery)
+    const {data: posts} = await sanityFetch({query: newsQuery})
 
     // const posts = [
     //   {
@@ -45,6 +46,7 @@ export default async function Home({searchParams}: {
         )}
       </ul>
     </section>
+    <SanityLive />
     </>
   );
 }
