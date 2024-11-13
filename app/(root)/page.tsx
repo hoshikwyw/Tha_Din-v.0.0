@@ -8,9 +8,9 @@ export default async function Home({searchParams}: {
   searchParams: Promise<{ query: string }>
 }) {
     const query = (await searchParams).query
-
+    const params = {search: query || null}
     // const posts = await client.fetch(newsQuery)
-    const {data: posts} = await sanityFetch({query: newsQuery})
+    const {data: posts} = await sanityFetch({query: newsQuery, params})
 
     // const posts = [
     //   {
@@ -33,7 +33,7 @@ export default async function Home({searchParams}: {
       <SearchForm query={query} />
     </section>
     <section className="section_container">
-      <p className="text-30-semibold">
+      <p className="text-30-semibold text-white">
         {query ? `Search result for "${query}"` : "All news"}
       </p>
       <ul className="mt-7 card_grid">
@@ -42,7 +42,7 @@ export default async function Home({searchParams}: {
               <NewsCard key={post?._id} post={post} />
             ))
         ) : (
-            <p className="no-results">No news found</p>
+            <p className="no-result">No news found</p>
         )}
       </ul>
     </section>
