@@ -13,3 +13,14 @@ export const newsQuery = defineQuery(`*[_type == 'news' && defined(slug.current)
         image,
         category
     }`);
+
+export const  NEWS_BY_ID_QUERY = defineQuery(`*[_type == "news" && _id == $id][0]{
+        _id,
+        title,
+        slug,
+        _createdAt,
+        author-> {
+            _id, name, username, imgae, bio
+        },
+        views,
+    }`)
