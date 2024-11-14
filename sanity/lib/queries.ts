@@ -6,7 +6,7 @@ export const newsQuery = defineQuery(`*[_type == 'news' && defined(slug.current)
         slug,
         _createdAt,
         author->{
-            _id,name, image, bio
+            _id, name, image, bio
         },
         views,
         description,
@@ -19,8 +19,18 @@ export const  NEWS_BY_ID_QUERY = defineQuery(`*[_type == "news" && _id == $id][0
         title,
         slug,
         _createdAt,
-        author-> {
-            _id, name, username, imgae, bio
+        author->{
+            _id, name, username, image, bio
         },
         views,
+        description,
+        image,
+        category,
+        pitch,
     }`)
+
+export const NEWS_VIEWS_QUERY = defineQuery(`
+    *[_type == "news" && _id == $id][0]{
+        _id, views
+    }
+`)

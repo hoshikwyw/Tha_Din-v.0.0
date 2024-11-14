@@ -20,6 +20,7 @@ const config: Config = {
                     DEFAULT: "#1B1B1F",
                 },
                 secondary: "#26262C",
+                accent: "#D4AF37",
                 black: {
                     "100": "#333333",
                     "200": "#141413",
@@ -43,6 +44,7 @@ const config: Config = {
                 100: "2px 2px 0px 0px rgb(0, 0, 0)",
                 200: "2px 2px 0px 2px rgb(0, 0, 0)",
                 300: "2px 2px 0px 2px rgb(238, 43, 105)",
+                400: "2px 2px 0px 2px #D4AF37",
             },
         },
     },
