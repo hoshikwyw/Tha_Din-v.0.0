@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { auth } from "@/auth";
 import NewsCard,{StartupTypeCard} from "@/components/NewsCard";
 import SearchForm from "@/components/SearchForm";
 import { sanityFetch, SanityLive } from "@/sanity/lib/live";
@@ -9,6 +10,10 @@ export default async function Home({searchParams}: {
 }) {
     const query = (await searchParams).query
     const params = {search: query || null}
+    const session = await auth()
+
+    console.log(session?.id);
+    
     // const posts = await client.fetch(newsQuery)
     const {data: posts} = await sanityFetch({query: newsQuery, params})
 
@@ -28,8 +33,8 @@ export default async function Home({searchParams}: {
   return (
     <>
     <section className="pink_container">
-      <h1 className="heading">Collection of the news of Civil War in Myanmar</h1>
-      <p className="sub-heading !max-w-3xl">What happening in Myanmar during the Civil War</p>
+      <h1 className="heading">Curated News Highlights: Stories that Spark Curiosity and Innovation</h1>
+      <p className="sub-heading !max-w-3xl">Discover a curated selection of engaging and insightful news stories spanning the latest in technology, healthcare, and industry trends. This collection highlights breakthrough innovations, transformative advancements, and impactful developments shaping the future across various sectors. Dive in to stay informed and inspired by news that matters.</p>
       <SearchForm query={query} />
     </section>
     <section className="section_container">
