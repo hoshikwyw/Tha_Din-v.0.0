@@ -17,10 +17,12 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.2",
     "@sanity/icons": "^3.4.0",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.63.0",
     "@tailwindcss/typography": "^0.5.15",
+    "@uiw/react-md-editor": "^4.0.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "easymde": "^2.18.0",
@@ -37,7 +39,8 @@
     "styled-components": "^6.1.13",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "tha-din": "file:"
+    "tha-din": "file:",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
