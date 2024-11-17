@@ -770,6 +770,27 @@
         },
         "optional": true
       },
+      "facebookLink": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tiktokLink": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "instagramLink": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "pitch": {
         "type": "objectAttribute",
         "value": {
