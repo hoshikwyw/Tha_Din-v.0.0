@@ -11,7 +11,8 @@ import { Author, News } from '@/sanity/types'
 export type StartupTypeCard = Omit<News, 'author'> & {author?: Author}
 
 const NewsCard = ({post}: {post: StartupTypeCard}) => {
-    const {_createdAt, views, author, title, category, _id, image, description} = post
+    const {_createdAt, views, author, title, category, _id, image, description, facebookLink, instagramLink, tiktokLink} = post
+
 
   return (
     <li className='startup-card group'>

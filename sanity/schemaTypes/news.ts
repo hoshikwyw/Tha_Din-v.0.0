@@ -40,8 +40,21 @@ export const news = defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
+            name: "facebookLink",
+            type: "url",
+        }),
+        defineField({
+            name: "tiktokLink",
+            type: "url",
+        }),
+        defineField({
+            name: "instagramLink",
+            type: "url",
+        }),
+        defineField({
             name: 'pitch',
             type: 'markdown',
         }),
+        
     ],
 })

@@ -27,6 +27,9 @@ export const  NEWS_BY_ID_QUERY = defineQuery(`*[_type == "news" && _id == $id][0
         image,
         category,
         pitch,
+        facebookLink,
+        tiktokLink,
+        instagramLink
     }`)
 
 export const NEWS_VIEWS_QUERY = defineQuery(`

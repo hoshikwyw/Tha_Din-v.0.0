@@ -10,6 +10,7 @@ import { formSchema } from '@/lib/validation'
 import { z } from 'zod'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { createPitch } from '@/lib/actions'
 
 const StartupForm = () => {
     const [errors, setErrors] = useState<Record<string, string>>({})
@@ -28,18 +29,19 @@ const StartupForm = () => {
           }
           
           await formSchema.parseAsync(formValues)
-          console.log(formValues);
           
-          // const result = await createDiffieHellman(formData, pitch)
-          // console.log(result);
-        // if(result.status == "SUCCESS") {
-        //     toast({
-        //         title: "Success",
-        //         description: "Form submitted successfully",
-        //     })
-        //     router.push(`/news/${result.id}`)
-        // }
-        // return result
+        const result = await createPitch(prevState,formData, pitch)
+        console.log(result,">>>>>");
+        
+        if(result.status == "SUCCESS") {
+            toast({
+                title: "Success",
+                description: "Form submitted successfully",
+                className: " bg-green-500",
+            })
+            router.push(`/news/${result._id}`)
+        }
+        return result
 
         } catch (error) {
             if (error instanceof z.ZodError) {
@@ -51,6 +53,7 @@ const StartupForm = () => {
                   title: "Error",
                   description: "Please check your inputs and try again",
                   variant: "destructive",
+                  className: "bg-red-500",
                 });
         
                 return { ...prevState, error: "Validation failed", status: "ERROR" };
@@ -59,6 +62,7 @@ const StartupForm = () => {
                 title: "Error",
                 description: "An expected error occurred",
                 variant: "destructive",
+                className: "bg-red-500",
               });
             return {
                 ...prevState,

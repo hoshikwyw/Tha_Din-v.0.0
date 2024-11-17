@@ -143,6 +143,9 @@ export type News = {
   description?: string;
   category?: string;
   image?: string;
+  facebookLink?: string;
+  tiktokLink?: string;
+  instagramLink?: string;
   pitch?: string;
 };
 
