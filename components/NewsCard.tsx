@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { formatDate } from '@/lib/utils'
+import { cn, formatDate } from '@/lib/utils'
 import { EyeIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { Button } from './ui/button'
 import { Author, News } from '@/sanity/types'
+import { Skeleton } from './ui/skeleton'
 
 export type StartupTypeCard = Omit<News, 'author'> & {author?: Author}
 
@@ -39,7 +40,7 @@ const NewsCard = ({post}: {post: StartupTypeCard}) => {
                     </Link>
                 </div>
                 <Link href={`/user/${author?._id}}`}>
-                    <Image src="https://placehold.co/48" alt="placeholder" width={48} height={48} className="rounded-full" />
+                    <Image src={author?.image} alt={author?.name} width={48} height={48} className="rounded-full" />
                 </Link>
         </div>
         <Link href={`/news/${_id}`}>
@@ -59,5 +60,15 @@ const NewsCard = ({post}: {post: StartupTypeCard}) => {
     </li>
   )
 }
+
+export const NewsCardSkeleton = () => (
+    <>
+        {[0,1,2,3,4].map((index: number) => (
+            <li key={cn(index)}>
+                <Skeleton className=' startup-card_skeleton' />
+            </li>
+        ))}
+    </>
+)
 
 export default NewsCard
