@@ -16,3 +16,4 @@ Sentry.init({
 });
 
 // SENTRY_AUTH_TOKEN=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
+
