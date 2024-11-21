@@ -24,6 +24,7 @@ const Navbar = async () => {
                         <Link href="/news/create">
                             <span className=' md:block sm:hidden xs:hidden xxs:hidden'>Create</span>
                             <BadgePlus className=' size-6 text-red-500 sm:block md:hidden' />
+                
                         </Link>
                     )}
                         <form action={async() => {
@@ -31,12 +32,14 @@ const Navbar = async () => {
                             await signOut({redirectTo: '/'})
                         }}>
                             <button type='submit'>
+
                                 <span className=' sm:hidden md:block xs:hidden xxs:hidden'>Logout</span>
                                 <LogOut className=' size-6 md:hidden sm:block text-red-500' />
+
                             </button>
                         </form>
                         <Link href={`/user/${session?.id}`}>
-                            <Avatar className=' size-9'>
+                            <Avatar className=' size-10'>
                                 <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
                                 <AvatarFallback>AV</AvatarFallback>
                             </Avatar>
