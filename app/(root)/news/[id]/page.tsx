@@ -31,7 +31,7 @@ const page = async ({params} : {params: Promise<{id: string}>}) => {
 
     const parsedContent = md.render(post?.pitch || '')
 
-    // console.log(post,">>>>");
+    // console.log(suggestPosts,">>>>");
     
   return (
     <div>
@@ -71,12 +71,12 @@ const page = async ({params} : {params: Promise<{id: string}>}) => {
         </div>
         <hr className="divider" />
 
-        {suggestPosts?.lenght > 0 && (
+        {suggestPosts.length > 0 && (
           <div className=" max-w-4xl mx-auto">
             <p className=" text-30-semibold ">Suggest Posts for you</p>
 
             <ul className=" mt-7 card_grid-sm">
-              {suggestPosts?.map((post: StartupTypeCard, i:number) => (
+              {suggestPosts.map((post: StartupTypeCard, i:number) => (
                 <NewsCard key={i} post={post} />
               ))}
             </ul>
