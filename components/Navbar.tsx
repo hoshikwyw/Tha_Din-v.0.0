@@ -22,8 +22,9 @@ const Navbar = async () => {
                     <>  
                     {isAdmin && (
                         <Link href="/news/create">
-                            <span className=' max-sm:hidden'>Create</span>
-                            <BadgePlus className=' size-6 text-red-500 sm:block xs:block md:hidden' />
+                            <span className=' md:block sm:hidden xs:hidden xxs:hidden'>Create</span>
+                            <BadgePlus className=' size-6 text-red-500 sm:block md:hidden' />
+                
                         </Link>
                     )}
                         <form action={async() => {
@@ -31,8 +32,10 @@ const Navbar = async () => {
                             await signOut({redirectTo: '/'})
                         }}>
                             <button type='submit'>
-                                <span className=' max-sm:hidden'>Logout</span>
-                                <LogOut className=' size-6 sm:block xs:block md:hidden text-red-500' />
+
+                                <span className=' sm:hidden md:block xs:hidden xxs:hidden'>Logout</span>
+                                <LogOut className=' size-6 md:hidden sm:block text-red-500' />
+
                             </button>
                         </form>
                         <Link href={`/user/${session?.id}`}>
