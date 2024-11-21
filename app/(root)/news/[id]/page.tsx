@@ -23,7 +23,7 @@ const page = async ({params} : {params: Promise<{id: string}>}) => {
     const [post, {select: suggestPosts}] = await Promise.all([
       client.fetch(NEWS_BY_ID_QUERY, {id}),
       client.fetch(PLAYLIST_BY_SLUG_QUERY, {
-        slug: "hot-feeds"
+        slug: "hot-feed"
       })
     ])
 
@@ -71,7 +71,6 @@ const page = async ({params} : {params: Promise<{id: string}>}) => {
         </div>
         <hr className="divider" />
 
-        {/* TODO : EDITOR SELECTED STARTUPS  */}
         {suggestPosts?.lenght > 0 && (
           <div className=" max-w-4xl mx-auto">
             <p className=" text-30-semibold ">Suggest Posts for you</p>
