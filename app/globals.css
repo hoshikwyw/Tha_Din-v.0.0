@@ -29,7 +29,7 @@
     }
 
     .text-30-semibold {
-        @apply font-semibold text-[30px] text-white-100;
+        @apply font-semibold text-[30px] text-black;
     }
 
     .text-26-semibold {
@@ -41,7 +41,7 @@
     }
 
     .text-20-medium {
-        @apply font-medium text-[20px] text-white;
+        @apply font-medium text-[20px] text-black;
     }
 
     .text-16-medium {
@@ -103,7 +103,7 @@
 
     /* idea details */
     .divider {
-        @apply border-dotted bg-zinc-400 max-w-4xl my-10 mx-auto;
+        @apply border-dotted bg-black max-w-4xl my-10 mx-auto;
     }
 
     .view_skeleton {
@@ -129,7 +129,7 @@
     }
 
     .search-input {
-        @apply flex-1 font-bold placeholder:font-semibold placeholder:text-black-100 w-full h-auto outline-none;
+        @apply flex-1 font-bold placeholder:font-semibold placeholder:text-black-100 w-full h-auto outline-none bg-transparent !important;
     }
 
     .search-btn {
@@ -150,11 +150,11 @@
     }
 
     .startup-card_img {
-        @apply w-full h-[164px] rounded-[10px] object-cover;
+        @apply w-full h-[164px] rounded-[10px] border border-black object-cover;
     }
 
     .startup-card_btn {
-        @apply rounded-full bg-black-200 font-medium text-[16px] text-white px-5 py-3 !important;
+        @apply rounded-full bg-accent border border-black font-medium text-[16px] text-black px-5 py-3 !important;
     }
 
     .startup-card_skeleton {
@@ -196,11 +196,11 @@
     }
 
     .view-text {
-        @apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-lg capitalize;
+        @apply font-medium text-[16px] bg-accent px-4 py-2 rounded-lg capitalize border border-black;
     }
 
     .category-tag {
-        @apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-full;
+        @apply font-medium text-[16px] bg-accent px-4 py-2 border border-black rounded-full;
     }
 
     .pattern {
