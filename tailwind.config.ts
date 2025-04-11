@@ -17,20 +17,20 @@ const config: Config = {
             colors: {
                 primary: {
                     "100": "#E5E5E5",
-                    DEFAULT: "#1B1B1F",
+                    DEFAULT: "#F5E6CA",
                 },
-                secondary: "#26262C",
-                accent: "#D4AF37",
+                secondary: "#E89F71",
+                accent: "#D9A5B3",
                 black: {
-                    "100": "#333333",
-                    "200": "#141413",
-                    "300": "#7D8087",
-                    "400": "#404443",
-                    DEFAULT: "#000000",
+                    "100": "#A8A8A8",
+                    "200": "#A8A8A8",
+                    "300": "#2D3E50",
+                    "400": "#2D3E50",
+                    DEFAULT: "#2D3E50",
                 },
                 white: {
-                    "100": "#F7F7F7",
-                    DEFAULT: "#FFFFFF",
+                    "100": "#FFF9F0",
+                    DEFAULT: "#FFF9F0",
                 },
             },
             fontFamily: {
