@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tha Din
+
+A news and content platform built with [Next.js 15](https://nextjs.org), [Sanity CMS](https://www.sanity.io/), and TypeScript. Users can browse news articles, explore curated playlists, and view author profiles.
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router) with React 19
+- **CMS:** Sanity v3 with live content and TypeGen
+- **Auth:** NextAuth v5 (beta)
+- **Styling:** Tailwind CSS, Radix UI, `class-variance-authority`
+- **Content:** Markdown rendering via `@uiw/react-md-editor` and `markdown-it`
+- **Monitoring:** Sentry
+- **Validation:** Zod
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies and run the development server:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app. The Sanity Studio is embedded at [http://localhost:3000/studio](http://localhost:3000/studio).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file in the project root with the following:
 
-## Learn More
+```bash
+NEXT_PUBLIC_SANITY_PROJECT_ID=
+NEXT_PUBLIC_SANITY_DATASET=
+NEXT_PUBLIC_SANITY_API_VERSION=
+SANITY_WRITE_TOKEN=
 
-To learn more about Next.js, take a look at the following resources:
+AUTH_SECRET=
+AUTH_GITHUB_ID=
+AUTH_GITHUB_SECRET=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+SENTRY_AUTH_TOKEN=
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
+- `npm run dev` — start the dev server (runs Sanity typegen first)
+- `npm run build` — production build (runs Sanity typegen first)
+- `npm run start` — start the production server
+- `npm run lint` — lint the project
+- `npm run typegen` — extract Sanity schema and regenerate TypeScript types
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  (root)/         # Public routes: home, news, user profiles
+  api/            # Route handlers
+  studio/         # Embedded Sanity Studio
+components/       # Shared UI components
+sanity/
+  schemaTypes/    # Content schemas: author, news, playlist
+  lib/            # Sanity client, queries, live helpers
+lib/              # Utilities and server actions
+```
+
+## Content Model
+
+Managed in Sanity, the main schemas are:
+
+- **Author** — profile, bio, and avatar
+- **News** — articles authored by users with slugs, views, and categories
+- **Playlist** — curated collections of news entries
+
+## Deployment
+
+Deploy on [Vercel](https://vercel.com/new). Make sure all environment variables listed above are configured in your Vercel project settings. Sentry is wired through `instrumentation.ts` and the `sentry.*.config.ts` files.
