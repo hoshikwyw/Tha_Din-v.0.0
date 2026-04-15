@@ -2,7 +2,7 @@
 import { auth } from "@/auth";
 import NewsCard,{StartupTypeCard} from "@/components/NewsCard";
 import SearchForm from "@/components/SearchForm";
-import { sanityFetch, SanityLive } from "@/sanity/lib/live";
+import { sanityFetch } from "@/sanity/lib/live";
 import { newsQuery } from "@/sanity/lib/queries";
 
 export default async function Home({searchParams}: {
@@ -51,7 +51,6 @@ export default async function Home({searchParams}: {
         )}
       </ul>
     </section>
-    <SanityLive />
     </>
   );
 }

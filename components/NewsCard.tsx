@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { cn, formatDate } from "@/lib/utils";
 import { EyeIcon } from "lucide-react";
-import Image from "next/image";
+import ImageWithFallback from "./ImageWithFallback";
 import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
@@ -46,9 +46,9 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
           </Link>
         </div>
         <Link href={`/user/${author?._id}}`}>
-          <Image
+          <ImageWithFallback
             src={author?.image}
-            alt={author?.name}
+            alt={author?.name ?? "author"}
             width={48}
             height={48}
             className="rounded-full border border-black"
@@ -57,15 +57,13 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
       </div>
       <Link href={`/news/${_id}`}>
         <p className="startup-card_desc">{description}</p>
-        {image && (
-          <Image
-            src={image}
-            alt="Image"
-            className="startup-card_img"
-            width={500}
-            height={500}
-          />
-        )}
+        <ImageWithFallback
+          src={image}
+          alt="Image"
+          className="startup-card_img"
+          width={500}
+          height={500}
+        />
       </Link>
       <div className="flex-between gap-3 mt-5">
         <Link href={`/?query=${category?.toLowerCase()}`}>

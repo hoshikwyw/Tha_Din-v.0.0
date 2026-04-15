@@ -6,6 +6,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React, { Suspense } from "react";
 import markdownit from "markdown-it";
+import sanitizeHtml from "sanitize-html";
 import { Skeleton } from "@/components/ui/skeleton";
 import View from "@/components/View";
 import NewsCard, { StartupTypeCard } from "@/components/NewsCard";
@@ -28,7 +29,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   if (!post) return notFound();
 
-  const parsedContent = md.render(post?.pitch || "");
+  const parsedContent = sanitizeHtml(md.render(post?.pitch || ""));
 
   // console.log(suggestPosts,">>>>");
 
