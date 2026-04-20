@@ -178,31 +178,34 @@
         @apply border-[3px] border-black p-5 text-[18px] text-[#949c9e] font-semibold rounded-[20px] mt-3 placeholder:text-black-400 !important;
     }
 
-    .startup-form_select {
-        display: block !important;
+    .startup-form_select-trigger {
+        display: flex !important;
         width: 100% !important;
+        height: auto !important;
         border: 3px solid #2D3E50 !important;
-        padding: 1.75rem 3.5rem 1.75rem 1.5rem !important;
+        padding: 1.5rem 1.75rem !important;
         font-size: 18px !important;
-        line-height: 1.25 !important;
         color: #2D3E50 !important;
         font-weight: 600 !important;
         border-radius: 9999px !important;
         margin-top: 0.75rem !important;
         background-color: #fff !important;
-        appearance: none !important;
-        -webkit-appearance: none !important;
-        -moz-appearance: none !important;
         cursor: pointer !important;
-        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232D3E50' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
-        background-repeat: no-repeat !important;
-        background-position: right 1.5rem center !important;
-        background-size: 1.25rem !important;
+        box-shadow: none !important;
     }
 
-    .startup-form_select:focus {
+    .startup-form_select-trigger:focus,
+    .startup-form_select-trigger:focus-visible {
         outline: none !important;
         box-shadow: 0 0 0 3px rgba(232, 159, 113, 0.5) !important;
+    }
+
+    .startup-form_select-trigger > span {
+        font-size: 18px !important;
+    }
+
+    .startup-form_select-trigger[data-placeholder] {
+        color: #949c9e !important;
     }
 
     .startup-form_file {

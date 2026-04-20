@@ -11,6 +11,13 @@ import { z } from 'zod'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { createPitch } from '@/lib/actions'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from './ui/select'
 
 type CategoryOption = { _id: string; title: string | null }
 
@@ -18,6 +25,7 @@ const StartupForm = ({ categories }: { categories: CategoryOption[] }) => {
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [pitch, setPitch] = useState("")
     const [imagePreview, setImagePreview] = useState<string | null>(null)
+    const [category, setCategory] = useState("")
     const fileInputRef = useRef<HTMLInputElement>(null)
     const {toast} = useToast()
     const router = useRouter()
@@ -127,20 +135,23 @@ const StartupForm = ({ categories }: { categories: CategoryOption[] }) => {
             <label htmlFor="category" className='startup-form_label'>
             Category
             </label>
-            <select
-                id='category'
-                name='category'
-                className='startup-form_select'
-                required
-                defaultValue=""
-            >
-                <option value="" disabled>
-                    {categories.length === 0 ? "No categories yet — create one first" : "Select a category"}
-                </option>
-                {categories.map((c) => (
-                    <option key={c._id} value={c._id}>{c.title}</option>
-                ))}
-            </select>
+            <input type="hidden" name="category" value={category} />
+            <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className='startup-form_select-trigger'>
+                    <SelectValue
+                        placeholder={categories.length === 0
+                            ? "No categories yet — create one first"
+                            : "Select a category"}
+                    />
+                </SelectTrigger>
+                <SelectContent>
+                    {categories.map((c) => (
+                        <SelectItem key={c._id} value={c._id}>
+                            {c.title}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             {errors.category && <p className='startup-form_error'>{errors.category}</p> }
         </div>
 
