@@ -130,7 +130,7 @@ const StartupForm = ({ categories }: { categories: CategoryOption[] }) => {
             <select
                 id='category'
                 name='category'
-                className='startup-form_input'
+                className='startup-form_select'
                 required
                 defaultValue=""
             >
@@ -149,12 +149,12 @@ const StartupForm = ({ categories }: { categories: CategoryOption[] }) => {
             <label htmlFor="image" className='startup-form_label'>
             Image
             </label>
-            <Input
+            <input
                 id='image'
                 name='image'
                 type='file'
                 accept='image/*'
-                className='startup-form_input'
+                className='startup-form_file'
                 required
                 ref={fileInputRef}
                 onChange={handleImageChange}
@@ -164,7 +164,7 @@ const StartupForm = ({ categories }: { categories: CategoryOption[] }) => {
                 <img
                     src={imagePreview}
                     alt='preview'
-                    className='mt-3 max-h-48 rounded-lg border border-black'
+                    className='startup-form_image-preview'
                 />
             )}
             {errors.image && <p className='startup-form_error'>{errors.image}</p> }
