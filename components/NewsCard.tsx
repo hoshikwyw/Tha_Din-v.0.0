@@ -6,10 +6,14 @@ import ImageWithFallback from "./ImageWithFallback";
 import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
-import { Author, News } from "@/sanity/types";
+import { Author, Category, News } from "@/sanity/types";
 import { Skeleton } from "./ui/skeleton";
+import { urlFor } from "@/sanity/lib/image";
 
-export type StartupTypeCard = Omit<News, "author"> & { author?: Author };
+export type StartupTypeCard = Omit<News, "author" | "category"> & {
+  author?: Author;
+  category?: Pick<Category, "_id" | "title" | "slug"> | null;
+};
 
 const NewsCard = ({ post }: { post: StartupTypeCard }) => {
   const {
@@ -58,7 +62,7 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
       <Link href={`/news/${_id}`}>
         <p className="startup-card_desc">{description}</p>
         <ImageWithFallback
-          src={image}
+          src={image ? urlFor(image).width(500).height(500).url() : null}
           alt="Image"
           className="startup-card_img"
           width={500}
@@ -66,8 +70,8 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
         />
       </Link>
       <div className="flex-between gap-3 mt-5">
-        <Link href={`/?query=${category?.toLowerCase()}`}>
-          <p className="text-16-medium">{category}</p>
+        <Link href={`/?query=${category?.title?.toLowerCase() ?? ""}`}>
+          <p className="text-16-medium">{category?.title}</p>
         </Link>
         <Button className="startup-card_btn" asChild>
           <Link href={`/news/${_id}`}>Details</Link>

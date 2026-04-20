@@ -1,6 +1,6 @@
 import { defineQuery } from "next-sanity";
 
-export const newsQuery = defineQuery(`*[_type == 'news' && defined(slug.current) && (!defined($search) || title match $search || category match $search || author.name match $search)] | order(_createdAt desc) {
+export const newsQuery = defineQuery(`*[_type == 'news' && defined(slug.current) && (!defined($search) || title match $search || category->title match $search || author.name match $search)] | order(_createdAt desc) {
         _id,
         title,
         slug,
@@ -11,7 +11,7 @@ export const newsQuery = defineQuery(`*[_type == 'news' && defined(slug.current)
         views,
         description,
         image,
-        category
+        category->{ _id, title, slug }
     }`);
 
 export const  NEWS_BY_ID_QUERY = defineQuery(`*[_type == "news" && _id == $id][0]{
@@ -25,7 +25,7 @@ export const  NEWS_BY_ID_QUERY = defineQuery(`*[_type == "news" && _id == $id][0
         views,
         description,
         image,
-        category,
+        category->{ _id, title, slug },
         pitch,
         facebookLink,
         tiktokLink,
@@ -73,7 +73,7 @@ export const NEWS_BY_AUTHOR_QUERY = defineQuery(`*[_type == 'news' && author._re
     views,
     description,
     image,
-    category
+    category->{ _id, title, slug }
 }`);
 
 export const PLAYLIST_BY_SLUG_QUERY = defineQuery(`*[_type == "playlist" && slug.current == $slug][0]{
@@ -94,8 +94,15 @@ export const PLAYLIST_BY_SLUG_QUERY = defineQuery(`*[_type == "playlist" && slug
     },
     views,
     description,
-    category,
+    category->{ _id, title, slug },
     image,
     pitch
   }
+}`);
+
+export const CATEGORIES_QUERY = defineQuery(`*[_type == "category"] | order(title asc) {
+  _id,
+  title,
+  slug,
+  description
 }`);

@@ -31,12 +31,14 @@ export const news = defineType({
         }),
         defineField({
             name: 'category',
-            type: 'string',
-            validation: (Rule) => Rule.min(1).max(20).required().error("Please enter a category"),
+            type: 'reference',
+            to: [{ type: 'category' }],
+            validation: (Rule) => Rule.required().error("Please select a category"),
         }),
         defineField({
             name: 'image',
-            type: 'url',
+            type: 'image',
+            options: { hotspot: true },
             validation: (Rule) => Rule.required(),
         }),
         defineField({

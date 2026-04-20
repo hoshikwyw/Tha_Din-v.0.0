@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useActionState, useState } from 'react'
+import React, { useActionState, useRef, useState } from 'react'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import MDEditor from "@uiw/react-md-editor"
@@ -12,27 +12,40 @@ import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { createPitch } from '@/lib/actions'
 
-const StartupForm = () => {
+type CategoryOption = { _id: string; title: string | null }
+
+const StartupForm = ({ categories }: { categories: CategoryOption[] }) => {
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [pitch, setPitch] = useState("")
+    const [imagePreview, setImagePreview] = useState<string | null>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null)
     const {toast} = useToast()
     const router = useRouter()
-    
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) {
+            setImagePreview(null)
+            return
+        }
+        const url = URL.createObjectURL(file)
+        setImagePreview(url)
+    }
+
     const handleFormSubmit = async (prevState: any, formData: FormData) => {
         try {
           const formValues = {
             title: formData.get("title") as string,
             description: formData.get("description") as string,
             category: formData.get("category") as string,
-            link: formData.get("link") as string,
+            image: formData.get("image") as File,
             pitch,
           }
-          
+
           await formSchema.parseAsync(formValues)
-          
-        const result = await createPitch(prevState,formData, pitch)
-        console.log(result,">>>>>");
-        
+
+        const result = await createPitch(prevState, formData, pitch)
+
         if(result.status == "SUCCESS") {
             toast({
                 title: "Success",
@@ -46,16 +59,16 @@ const StartupForm = () => {
         } catch (error) {
             if (error instanceof z.ZodError) {
                 const fieldErorrs = error.flatten().fieldErrors;
-        
+
                 setErrors(fieldErorrs as unknown as Record<string, string>);
-        
+
                 toast({
                   title: "Error",
                   description: "Please check your inputs and try again",
                   variant: "destructive",
                   className: "bg-red-500",
                 });
-        
+
                 return { ...prevState, error: "Validation failed", status: "ERROR" };
             }
             toast({
@@ -71,7 +84,7 @@ const StartupForm = () => {
             }
         }
     }
-      
+
     const [state, formAction, isPending] = useActionState(handleFormSubmit, {
         error: "",
         status: "INITIAL",
@@ -84,7 +97,7 @@ const StartupForm = () => {
             <label htmlFor="title" className='startup-form_label'>
                 Title
             </label>
-            <Input 
+            <Input
                 id='title'
                 name='title'
                 className='startup-form_input'
@@ -99,7 +112,7 @@ const StartupForm = () => {
             <label htmlFor="description" className='startup-form_label'>
             Description
             </label>
-            <Textarea 
+            <Textarea
                 id='description'
                 name='description'
                 className='startup-form_textarea'
@@ -109,34 +122,52 @@ const StartupForm = () => {
             {errors.description && <p className='startup-form_error'>{errors.description}</p> }
         </div>
 
-        {/* NEWS CATEGORY INPUT AREA  */}
+        {/* NEWS CATEGORY DROPDOWN */}
         <div>
             <label htmlFor="category" className='startup-form_label'>
-            category
+            Category
             </label>
-            <Input 
+            <select
                 id='category'
                 name='category'
                 className='startup-form_input'
                 required
-                placeholder='Startup Category (Tech, Education, Health...)'
-            />
+                defaultValue=""
+            >
+                <option value="" disabled>
+                    {categories.length === 0 ? "No categories yet — create one first" : "Select a category"}
+                </option>
+                {categories.map((c) => (
+                    <option key={c._id} value={c._id}>{c.title}</option>
+                ))}
+            </select>
             {errors.category && <p className='startup-form_error'>{errors.category}</p> }
         </div>
 
-        {/* NEWS IMAGE INPUT AREA  */}
+        {/* NEWS IMAGE UPLOAD */}
         <div>
-            <label htmlFor="link" className='startup-form_label'>
-            Image Url
+            <label htmlFor="image" className='startup-form_label'>
+            Image
             </label>
-            <Input 
-                id='link'
-                name='link'
+            <Input
+                id='image'
+                name='image'
+                type='file'
+                accept='image/*'
                 className='startup-form_input'
                 required
-                placeholder='Startup Image URL'
+                ref={fileInputRef}
+                onChange={handleImageChange}
             />
-            {errors.link && <p className='startup-form_error'>{errors.link}</p> }
+            {imagePreview && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                    src={imagePreview}
+                    alt='preview'
+                    className='mt-3 max-h-48 rounded-lg border border-black'
+                />
+            )}
+            {errors.image && <p className='startup-form_error'>{errors.image}</p> }
         </div>
 
         {/* NEWS PITCH INPUT AREA  */}
@@ -144,8 +175,8 @@ const StartupForm = () => {
             <label htmlFor="pitch" className='startup-form_label'>
             Pitch
             </label>
-            <MDEditor 
-                value={pitch} 
+            <MDEditor
+                value={pitch}
                 onChange={(value) => setPitch(value as string)}
                 id='pitch'
                 preview='edit'
