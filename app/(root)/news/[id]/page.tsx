@@ -1,7 +1,7 @@
 import { formatDate } from "@/lib/utils";
 import { client } from "@/sanity/lib/client";
 import { NEWS_BY_ID_QUERY, PLAYLIST_BY_SLUG_QUERY } from "@/sanity/lib/queries";
-import { urlFor } from "@/sanity/lib/image";
+import { resolveCategoryTitle, resolveImageUrl } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -41,15 +41,18 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
       </section>
       <section className="section_container">
         <div className=" w-full flex justify-center">
-          {post.image && (
-            <Image
-              src={urlFor(post.image).width(600).height(600).url()}
-              alt="thumbnail"
-              width={300}
-              height={300}
-              className=" rounded-xl"
-            />
-          )}
+          {(() => {
+            const src = resolveImageUrl(post.image, { width: 600, height: 600 });
+            return src ? (
+              <Image
+                src={src}
+                alt="thumbnail"
+                width={300}
+                height={300}
+                className=" rounded-xl"
+              />
+            ) : null;
+          })()}
         </div>
         <div className="space-y-5 mt-10 max-w-4xl mx-auto">
           <div className="flex-between gap-5">
@@ -75,7 +78,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
             </Link>
 
             <div className="flex gap-1.5">
-              <p className="category-tag">{post.category?.title}</p>
+              <p className="category-tag">{resolveCategoryTitle(post.category)}</p>
             </div>
           </div>
 
