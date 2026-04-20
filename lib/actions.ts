@@ -47,6 +47,7 @@ export const createPitch = async (
     const news = {
       title,
       description,
+      views: 0,
       category: {
         _type: "reference",
         _ref: category,

@@ -1,9 +1,9 @@
 import { auth } from '@/auth'
+import ImageWithFallback from '@/components/ImageWithFallback'
 import { NewsCardSkeleton } from '@/components/NewsCard'
 import UserNews from '@/components/UserNews'
 import { client } from '@/sanity/lib/client'
 import { AUTHOR_BY_ID_QUERY } from '@/sanity/lib/queries'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import React, { Suspense } from 'react'
 
@@ -24,7 +24,7 @@ const page = async ({params}: {params: Promise<{id: string}>}) => {
             </h3>
           </div>
 
-          <Image src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzuXm5Lc874YeX7ti9YruxTleQ8V1YJtqkEA&s" alt="profile" width={220} height={220} className='profile_image' />
+          <ImageWithFallback src={user?.image} alt={user?.name ?? "profile"} width={220} height={220} className='profile_image' />
 
           <p className="text-30-extrabold mt-7 text-center">
             @{user?.username}

@@ -19,7 +19,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   // const post = await client.fetch(NEWS_BY_ID_QUERY, {id})
 
-  const [post, { select: suggestPosts }] = await Promise.all([
+  const [post, playlist] = await Promise.all([
     client.fetch(NEWS_BY_ID_QUERY, { id }),
     client.fetch(PLAYLIST_BY_SLUG_QUERY, {
       slug: "hot-feed",
@@ -27,6 +27,8 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   ]);
 
   if (!post) return notFound();
+
+  const suggestPosts = playlist?.select ?? [];
 
   const parsedContent = sanitizeHtml(md.render(post?.pitch || ""));
 
@@ -62,17 +64,18 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
             >
               {post.author?.image && (
                 <Image
-                  src={post.author?.image}
+                  src={post.author.image}
                   alt="profile"
                   width={64}
                   height={64}
                   className=" border border-black rounded-full drop-shadow-lg"
+                  unoptimized
                 />
               )}
               <div>
-                <p className="text-20-medium">{post.author.name}</p>
+                <p className="text-20-medium">{post.author?.name}</p>
                 <p className="text-16-medium !text-secondary">
-                  @{post.author.username}
+                  @{post.author?.username}
                 </p>
               </div>
             </Link>
@@ -96,7 +99,7 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
         <hr className="divider" />
 
-        {suggestPosts.length > 0 && (
+        {suggestPosts && suggestPosts.length > 0 && (
           <div className=" max-w-4xl mx-auto">
             <p className=" text-30-semibold">Suggest Posts for you</p>
 
