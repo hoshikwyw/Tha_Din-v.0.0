@@ -1,4 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+/* Work Sans is self-hosted via next/font in app/layout.tsx — do not re-import it
+   from Google Fonts here, that would download the family a second time and
+   block the first paint. */
 
 @tailwind base;
 @tailwind components;

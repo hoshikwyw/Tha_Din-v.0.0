@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-no-undef */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { cn, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { EyeIcon } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
 import Link from "next/link";
@@ -16,30 +14,22 @@ export type StartupTypeCard = Omit<News, "author" | "category"> & {
 };
 
 const NewsCard = ({ post }: { post: StartupTypeCard }) => {
-  const {
-    _createdAt,
-    views,
-    author,
-    title,
-    category,
-    _id,
-    image,
-    description,
-    facebookLink,
-    instagramLink,
-    tiktokLink,
-  } = post;
+  const { _createdAt, views, author, title, category, _id, image, description } =
+    post;
+
+  const categoryTitle = resolveCategoryTitle(category);
 
   return (
     <li className="startup-card group">
       <div className="flex-between">
-        <p className="startup_card_date">{formatDate(_createdAt)}</p>
+        <p className="startup-card_date">{formatDate(_createdAt)}</p>
 
         <div className="flex gap-1.5">
           <EyeIcon className="size-6 text-black" />
           <span className="text-16-medium">{views ?? 0}</span>
         </div>
       </div>
+
       <div className="flex-between mt-5 gap-5">
         <div className="flex-1">
           <Link href={`/user/${author?._id}`}>
@@ -49,7 +39,7 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
             <h3 className="text-26-semibold line-clamp-1">{title}</h3>
           </Link>
         </div>
-        <Link href={`/user/${author?._id}}`}>
+        <Link href={`/user/${author?._id}`}>
           <ImageWithFallback
             src={author?.image}
             alt={author?.name ?? "author"}
@@ -59,19 +49,21 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
           />
         </Link>
       </div>
+
       <Link href={`/news/${_id}`}>
         <p className="startup-card_desc">{description}</p>
         <ImageWithFallback
           src={resolveImageUrl(image, { width: 500, height: 500 })}
-          alt="Image"
+          alt={title ?? "News thumbnail"}
           className="startup-card_img"
           width={500}
           height={500}
         />
       </Link>
+
       <div className="flex-between gap-3 mt-5">
-        <Link href={`/?query=${resolveCategoryTitle(category)?.toLowerCase() ?? ""}`}>
-          <p className="text-16-medium">{resolveCategoryTitle(category)}</p>
+        <Link href={`/?query=${categoryTitle?.toLowerCase() ?? ""}`}>
+          <p className="text-16-medium">{categoryTitle}</p>
         </Link>
         <Button className="startup-card_btn" asChild>
           <Link href={`/news/${_id}`}>Details</Link>
@@ -83,9 +75,9 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
 
 export const NewsCardSkeleton = () => (
   <>
-    {[0, 1, 2, 3, 4].map((index: number) => (
-      <li key={cn(index)}>
-        <Skeleton className=" startup-card_skeleton" />
+    {[0, 1, 2, 3, 4].map((index) => (
+      <li key={index}>
+        <Skeleton className="startup-card_skeleton" />
       </li>
     ))}
   </>

@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
-import { parseServerActionRespnse } from "./utils";
+import { parseServerActionResponse } from "./utils";
 import slugify from "slugify";
 import { writeClient } from "@/sanity/lib/write-client";
 
@@ -13,7 +13,7 @@ export const createPitch = async (
   const session = await auth();
 
   if (!session)
-    return parseServerActionRespnse({
+    return parseServerActionResponse({
       error: "Not signed in",
       status: "ERROR",
     });
@@ -24,14 +24,14 @@ export const createPitch = async (
   const imageFile = form.get("image") as File | null;
 
   if (!imageFile || !(imageFile instanceof File) || imageFile.size === 0) {
-    return parseServerActionRespnse({
+    return parseServerActionResponse({
       error: "Image is required",
       status: "ERROR",
     });
   }
 
   if (!category) {
-    return parseServerActionRespnse({
+    return parseServerActionResponse({
       error: "Category is required",
       status: "ERROR",
     });
@@ -72,7 +72,7 @@ export const createPitch = async (
 
     const result = await writeClient.create({ _type: "news", ...news });
 
-    return parseServerActionRespnse({
+    return parseServerActionResponse({
       ...result,
       error: "",
       status: "SUCCESS",
@@ -80,7 +80,7 @@ export const createPitch = async (
   } catch (error) {
     console.log(error);
 
-    return parseServerActionRespnse({
+    return parseServerActionResponse({
       error: JSON.stringify(error),
       status: "ERROR",
     });
@@ -91,7 +91,7 @@ export const createCategory = async (state: any, form: FormData) => {
   const session = await auth();
 
   if (!session)
-    return parseServerActionRespnse({
+    return parseServerActionResponse({
       error: "Not signed in",
       status: "ERROR",
     });
@@ -100,7 +100,7 @@ export const createCategory = async (state: any, form: FormData) => {
   const description = (form.get("description") as string)?.trim();
 
   if (!title) {
-    return parseServerActionRespnse({
+    return parseServerActionResponse({
       error: "Title is required",
       status: "ERROR",
     });
@@ -119,7 +119,7 @@ export const createCategory = async (state: any, form: FormData) => {
       },
     });
 
-    return parseServerActionRespnse({
+    return parseServerActionResponse({
       ...result,
       error: "",
       status: "SUCCESS",
@@ -127,7 +127,7 @@ export const createCategory = async (state: any, form: FormData) => {
   } catch (error) {
     console.log(error);
 
-    return parseServerActionRespnse({
+    return parseServerActionResponse({
       error: JSON.stringify(error),
       status: "ERROR",
     });
