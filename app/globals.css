@@ -9,41 +9,91 @@
 @layer base {
     :root {
         --radius: 0.5rem;
+
+        /*
+         * Fluid type scale. Each value interpolates between a mobile size at a
+         * 320px viewport and the original desktop size at 1280px, so text
+         * scales continuously instead of snapping at a single `sm:` breakpoint.
+         * Names keep their original "-30-", "-26-" numbering: that number is
+         * still the size at desktop.
+         */
+        --fs-30: clamp(1.375rem, 1.2083rem + 0.8333vw, 1.875rem);   /* 22 -> 30 */
+        --fs-26: clamp(1.25rem, 1.125rem + 0.625vw, 1.625rem);      /* 20 -> 26 */
+        --fs-24: clamp(1.1875rem, 1.0833rem + 0.5208vw, 1.5rem);    /* 19 -> 24 */
+        --fs-20: clamp(1.0625rem, 1rem + 0.3125vw, 1.25rem);        /* 17 -> 20 */
+        --fs-heading: clamp(1.75rem, 1.2083rem + 2.7083vw, 3.375rem); /* 28 -> 54 */
+        --fs-subheading: clamp(1rem, 0.9167rem + 0.4167vw, 1.25rem);  /* 16 -> 20 */
     }
-    
+
+    html {
+        /* Stop iOS Safari inflating text when the device is rotated. */
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        @apply bg-primary;
+    }
+
+    /*
+     * The design had no visible focus indicator anywhere, which makes the site
+     * unusable by keyboard. This restores one without affecting mouse users.
+     */
+    :focus-visible {
+        outline: 3px solid theme("colors.black.DEFAULT");
+        outline-offset: 2px;
+    }
+
+    /* Long unbroken strings (URLs, pasted headlines) must not force the page
+       to scroll sideways on a narrow screen. */
+    h1, h2, h3, p, li, a {
+        overflow-wrap: break-word;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
 }
 
 @layer utilities {
-    body {
-        @apply bg-primary;
-      }
-
     .flex-between {
         @apply flex justify-between items-center;
     }
 
     .text-30-extrabold {
-        @apply text-[30px] font-extrabold text-white;
+        @apply font-extrabold text-white;
+        font-size: var(--fs-30);
     }
 
     .text-30-bold {
-        @apply text-[30px] font-bold text-black;
+        @apply font-bold text-black;
+        font-size: var(--fs-30);
     }
 
     .text-30-semibold {
-        @apply font-semibold text-[30px] text-black;
+        @apply font-semibold text-black;
+        font-size: var(--fs-30);
     }
 
     .text-26-semibold {
-        @apply font-semibold text-[26px] text-black;
+        @apply font-semibold text-black;
+        font-size: var(--fs-26);
     }
 
     .text-24-black {
-        @apply text-[24px] font-black text-black;
+        @apply font-black text-black;
+        font-size: var(--fs-24);
     }
 
     .text-20-medium {
-        @apply font-medium text-[20px] text-black;
+        @apply font-medium text-black;
+        font-size: var(--fs-20);
     }
 
     .text-16-medium {
@@ -55,31 +105,43 @@
     }
 
     .pink_container {
-        @apply w-full bg-secondary min-h-[530px] pattern flex justify-center items-center flex-col py-10 px-6;
+        /* Was a flat min-h-[530px]: on a phone that filled the entire screen
+           and pushed every article below the fold, and in landscape it left no
+           room for content at all. */
+        @apply w-full bg-secondary min-h-[380px] sm:min-h-[460px] lg:min-h-[530px]
+               pattern flex justify-center items-center flex-col
+               py-8 sm:py-10 px-4 sm:px-6;
     }
 
     .tag {
-        @apply bg-accent px-6 py-3 font-work-sans font-bold rounded-sm uppercase relative tag-tri;
+        @apply bg-accent px-4 sm:px-6 py-2 sm:py-3 font-work-sans font-bold rounded-sm uppercase relative tag-tri text-sm sm:text-base;
     }
 
     .heading {
-        @apply uppercase bg-black px-6 py-3 font-work-sans font-extrabold text-white sm:text-[54px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl text-center my-5;
+        @apply uppercase bg-black px-4 sm:px-6 py-3 font-work-sans font-extrabold text-white
+               max-w-5xl text-center my-5 break-words;
+        font-size: var(--fs-heading);
+        line-height: 1.18;
     }
 
     .sub-heading {
-        @apply font-medium text-[20px] text-white max-w-2xl text-center break-words;
+        @apply font-medium text-white max-w-2xl text-center break-words;
+        font-size: var(--fs-subheading);
     }
 
     .section_container {
-        @apply px-6 py-10 max-w-7xl mx-auto;
+        @apply px-4 sm:px-6 py-8 sm:py-10 max-w-7xl mx-auto;
     }
 
     .card_grid {
-        @apply grid md:grid-cols-3 sm:grid-cols-2 gap-5;
+        /* Explicit single column at the smallest sizes, and a 4th column on
+           very wide screens so cards stop stretching past a readable width. */
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+               gap-4 sm:gap-5;
     }
 
     .card_grid-sm {
-        @apply grid sm:grid-cols-2 gap-5;
+        @apply grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5;
     }
 
     .no-result {
@@ -88,11 +150,12 @@
 
     /* profile */
     .profile_container {
-        @apply w-full pb-10 pt-20 px-6 max-w-7xl mx-auto lg:flex-row flex-col flex gap-10;
+        @apply w-full pb-10 pt-14 sm:pt-20 px-4 sm:px-6 max-w-7xl mx-auto lg:flex-row flex-col flex gap-8 lg:gap-10;
     }
 
     .profile_card {
-        @apply w-80 px-6 pb-6 pt-20 flex flex-col justify-center items-center bg-primary border-[5px] border-black shadow-100 rounded-[30px] relative z-0 h-fit max-lg:w-full;
+        @apply w-full lg:w-80 px-5 sm:px-6 pb-6 pt-20 flex flex-col justify-center items-center
+               bg-primary border-[5px] border-black shadow-100 rounded-[30px] relative z-0 h-fit;
     }
 
     .profile_title {
@@ -105,7 +168,7 @@
 
     /* idea details */
     .divider {
-        @apply border-dotted bg-black max-w-4xl my-10 mx-auto;
+        @apply border-t-2 border-dotted border-black bg-transparent max-w-4xl my-8 sm:my-10 mx-auto;
     }
 
     .view_skeleton {
@@ -127,36 +190,47 @@
 
     /* searchform */
     .search-form {
-        @apply max-w-3xl w-full min-h-[80px] bg-white border-[5px] border-black rounded-[80px] text-[24px] mt-8 px-5 flex flex-row items-center gap-5;
+        /* At 320px the old fixed 80px height / 24px text / 5px border left
+           almost no room for the input between the pill's rounded ends. */
+        @apply max-w-3xl w-full min-h-[56px] sm:min-h-[70px] lg:min-h-[80px]
+               bg-white border-[3px] sm:border-[5px] border-black
+               rounded-full mt-6 sm:mt-8 px-4 sm:px-5
+               flex flex-row items-center gap-3 sm:gap-5
+               text-base sm:text-xl lg:text-[24px];
     }
 
     .search-input {
-        @apply flex-1 font-bold placeholder:font-semibold placeholder:text-black-100 w-full h-auto outline-none bg-transparent !important;
+        @apply flex-1 min-w-0 font-bold placeholder:font-semibold placeholder:text-black-100 w-full h-auto outline-none bg-transparent !important;
     }
 
     .search-btn {
-        @apply size-[50px] rounded-full bg-black flex justify-center items-center !important;
+        @apply size-[38px] sm:size-[44px] lg:size-[50px] shrink-0 rounded-full bg-black flex justify-center items-center !important;
     }
 
     /* startupcard */
     .startup-card {
-        @apply bg-white-100 border-[5px] border-black py-6 px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-400 hover:bg-primary-100;
+        @apply bg-white-100 border-[5px] border-black py-5 sm:py-6 px-4 sm:px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-400 hover:bg-primary-100;
     }
 
     .startup-card_date {
-        @apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-full group-hover:bg-white-100;
+        @apply font-medium text-sm sm:text-[16px] bg-primary-100 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full group-hover:bg-white-100;
     }
 
     .startup-card_desc {
-        @apply font-normal text-[16px] line-clamp-2 my-3 text-black-100 break-all;
+        /* `break-all` split words mid-letter ("jour|nalism"). `break-words`
+           only breaks a word when it genuinely cannot fit. */
+        @apply font-normal text-[16px] line-clamp-2 my-3 text-black-100 break-words;
     }
 
     .startup-card_img {
-        @apply w-full h-[164px] rounded-[10px] border border-black object-cover;
+        /* A fixed 164px height letterboxed hard at wide card widths and cropped
+           too aggressively at narrow ones. A ratio holds the same framing at
+           every column count. */
+        @apply w-full aspect-[16/10] rounded-[10px] border border-black object-cover;
     }
 
     .startup-card_btn {
-        @apply rounded-full bg-accent border border-black font-medium text-[16px] text-black px-5 py-3 !important;
+        @apply rounded-full bg-accent border border-black font-medium text-sm sm:text-[16px] text-black px-4 sm:px-5 py-2.5 sm:py-3 !important;
     }
 
     .startup-card_skeleton {
@@ -165,19 +239,22 @@
 
     /* startupform */
     .startup-form {
-        @apply max-w-2xl mx-auto my-10 space-y-8 px-6;
+        @apply max-w-2xl mx-auto my-8 sm:my-10 space-y-6 sm:space-y-8 px-4 sm:px-6;
     }
 
     .startup-form_label {
-        @apply font-bold text-[18px] text-white uppercase;
+        @apply font-bold text-[16px] sm:text-[18px] text-white uppercase;
     }
 
     .startup-form_input {
-        @apply border-[3px] border-black px-5 py-7 text-[18px] text-[#949c9e] font-semibold rounded-full mt-3 placeholder:text-black-400 !important;
+        /* py-7 gave an ~85px tall control on a phone. Note the font-size never
+           drops below 16px: iOS Safari auto-zooms the page on focus below that. */
+        @apply border-[3px] border-black px-4 sm:px-5 py-5 sm:py-7 text-[16px] sm:text-[18px]
+               text-[#949c9e] font-semibold rounded-full mt-3 placeholder:text-black-400 !important;
     }
 
     .startup-form_textarea {
-        @apply border-[3px] border-black p-5 text-[18px] text-[#949c9e] font-semibold rounded-[20px] mt-3 placeholder:text-black-400 !important;
+        @apply border-[3px] border-black p-4 sm:p-5 text-[16px] sm:text-[18px] text-[#949c9e] font-semibold rounded-[20px] mt-3 placeholder:text-black-400 !important;
     }
 
     .startup-form_select-trigger {
@@ -185,8 +262,8 @@
         width: 100% !important;
         height: auto !important;
         border: 3px solid #2D3E50 !important;
-        padding: 1.5rem 1.75rem !important;
-        font-size: 18px !important;
+        padding: 1rem 1.25rem !important;
+        font-size: 16px !important;
         color: #2D3E50 !important;
         font-weight: 600 !important;
         border-radius: 9999px !important;
@@ -203,7 +280,10 @@
     }
 
     .startup-form_select-trigger > span {
-        font-size: 18px !important;
+        font-size: inherit !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .startup-form_select-trigger[data-placeholder] {
@@ -214,7 +294,7 @@
         display: block !important;
         width: 100% !important;
         border: 3px solid #2D3E50 !important;
-        padding: 1rem 1.5rem !important;
+        padding: 0.75rem 1rem !important;
         font-size: 16px !important;
         color: #6b7280 !important;
         font-weight: 600 !important;
@@ -225,8 +305,8 @@
     }
 
     .startup-form_file::file-selector-button {
-        margin-right: 1rem;
-        padding: 0.75rem 1.5rem;
+        margin-right: 0.75rem;
+        padding: 0.5rem 1rem;
         border-radius: 9999px;
         border: 2px solid #2D3E50;
         background-color: #E89F71;
@@ -246,34 +326,35 @@
         border-radius: 20px;
         border: 3px solid #2D3E50;
         overflow: hidden;
+        width: 100%;
         max-height: 16rem;
         max-width: 24rem;
         object-fit: cover;
     }
 
     .startup-form_error {
-        @apply text-red-500 mt-2 ml-5;
+        @apply text-red-500 mt-2 ml-4 sm:ml-5 text-sm sm:text-base;
     }
 
     .startup-form_editor {
-        @apply mt-3 border-[3px] border-black text-[18px] text-black font-semibold placeholder:text-black-300 !important;
+        @apply mt-3 border-[3px] border-black text-[16px] sm:text-[18px] text-black font-semibold placeholder:text-black-300 !important;
     }
 
     .startup-form_btn {
-        @apply bg-primary border-[4px] border-black rounded-full p-5 min-h-[70px] w-full font-bold text-[18px] !important;
+        @apply bg-primary border-[4px] border-black rounded-full p-4 sm:p-5 min-h-[60px] sm:min-h-[70px] w-full font-bold text-[16px] sm:text-[18px] !important;
     }
 
     /* view */
     .view-container {
-        @apply flex justify-end items-center mt-5 fixed bottom-3 right-3;
+        @apply flex justify-end items-center mt-5 fixed bottom-3 right-3 z-10;
     }
 
     .view-text {
-        @apply font-medium text-[16px] bg-accent px-4 py-2 rounded-lg capitalize border border-black;
+        @apply font-medium text-sm sm:text-[16px] bg-accent px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg capitalize border border-black;
     }
 
     .category-tag {
-        @apply font-medium text-[16px] bg-accent px-4 py-2 border border-black rounded-full;
+        @apply font-medium text-sm sm:text-[16px] bg-accent px-3 sm:px-4 py-1.5 sm:py-2 border border-black rounded-full;
     }
 
     .pattern {
@@ -296,4 +377,9 @@
 
 .w-md-editor-toolbar {
     padding: 10px !important;
+}
+
+/* The markdown editor is a fixed-width island on small screens otherwise. */
+.w-md-editor {
+    max-width: 100%;
 }
