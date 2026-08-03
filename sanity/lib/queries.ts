@@ -1,6 +1,44 @@
 import { defineQuery } from "next-sanity";
 
-export const newsQuery = defineQuery(`*[_type == 'news' && defined(slug.current) && (!defined($search) || title match $search || category->title match $search || author.name match $search)] | order(_createdAt desc) {
+/*
+ * The news list comes in two sort orders. They are written out as two literal
+ * queries rather than one query with a parameterised `order()`, because
+ * `defineQuery` strings must stay static for `sanity typegen` to derive result
+ * types from them.
+ *
+ * Both share the same filter: optional full-text search, plus an optional
+ * category slug.
+ *
+ * Note `author->name`: this was `author.name`, which silently never matched.
+ * `author` is a reference, so the unresolved object only holds `_ref`/`_type` —
+ * searching by author name returned nothing.
+ */
+
+/** Newest first — the default ordering. */
+export const NEWS_LATEST_QUERY =
+  defineQuery(`*[_type == 'news' && defined(slug.current)
+      && (!defined($search) || title match $search || description match $search || category->title match $search || author->name match $search)
+      && (!defined($category) || category->slug.current == $category)
+    ] | order(_createdAt desc) {
+        _id,
+        title,
+        slug,
+        _createdAt,
+        author->{
+            _id, name, image, bio
+        },
+        views,
+        description,
+        image,
+        category->{ _id, title, slug }
+    }`);
+
+/** Most viewed first, with newest as the tie-breaker so the order is stable. */
+export const NEWS_POPULAR_QUERY =
+  defineQuery(`*[_type == 'news' && defined(slug.current)
+      && (!defined($search) || title match $search || description match $search || category->title match $search || author->name match $search)
+      && (!defined($category) || category->slug.current == $category)
+    ] | order(coalesce(views, 0) desc, _createdAt desc) {
         _id,
         title,
         slug,

@@ -4,7 +4,11 @@ import { absoluteUrl, siteConfig } from "@/lib/site";
 import { client, contentCache } from "@/sanity/lib/client";
 import { getNewsById } from "@/sanity/lib/fetchers";
 import { PLAYLIST_BY_SLUG_QUERY } from "@/sanity/lib/queries";
-import { resolveCategoryTitle, resolveImageUrl } from "@/sanity/lib/image";
+import {
+  resolveCategorySlug,
+  resolveCategoryTitle,
+  resolveImageUrl,
+} from "@/sanity/lib/image";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -170,9 +174,18 @@ const NewsDetailPage = async ({
 
             {resolveCategoryTitle(post.category) && (
               <div className="flex gap-1.5 shrink-0">
-                <p className="category-tag">
-                  {resolveCategoryTitle(post.category)}
-                </p>
+                {resolveCategorySlug(post.category) ? (
+                  <Link
+                    href={`/?category=${encodeURIComponent(resolveCategorySlug(post.category)!)}`}
+                    className="category-tag transition-colors hover:brightness-105"
+                  >
+                    {resolveCategoryTitle(post.category)}
+                  </Link>
+                ) : (
+                  <p className="category-tag">
+                    {resolveCategoryTitle(post.category)}
+                  </p>
+                )}
               </div>
             )}
           </div>

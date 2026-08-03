@@ -6,7 +6,11 @@ import React from "react";
 import { Button } from "./ui/button";
 import { Author, Category, News } from "@/sanity/types";
 import { Skeleton } from "./ui/skeleton";
-import { resolveCategoryTitle, resolveImageUrl } from "@/sanity/lib/image";
+import {
+  resolveCategorySlug,
+  resolveCategoryTitle,
+  resolveImageUrl,
+} from "@/sanity/lib/image";
 
 export type NewsCardType = Omit<News, "author" | "category"> & {
   author?: Author;
@@ -18,6 +22,7 @@ const NewsCard = ({ post }: { post: NewsCardType }) => {
     post;
 
   const categoryTitle = resolveCategoryTitle(category);
+  const categorySlug = resolveCategorySlug(category);
 
   return (
     <li className="news-card group">
@@ -70,14 +75,21 @@ const NewsCard = ({ post }: { post: NewsCardType }) => {
       </Link>
 
       <div className="flex-between gap-3 mt-5">
-        <Link
-          href={`/?query=${categoryTitle?.toLowerCase() ?? ""}`}
-          className="min-w-0"
-        >
-          <p className="text-16-medium truncate transition-colors hover:text-secondary">
-            {categoryTitle}
-          </p>
-        </Link>
+        {/* Was `/?query=<title>`, a plain text search that also matched titles
+            and descriptions. It now uses the real category filter — and falls
+            back to an unlinked label for legacy docs that have no slug. */}
+        {categorySlug ? (
+          <Link
+            href={`/?category=${encodeURIComponent(categorySlug)}`}
+            className="min-w-0"
+          >
+            <p className="text-16-medium truncate transition-colors hover:text-secondary">
+              {categoryTitle}
+            </p>
+          </Link>
+        ) : (
+          <p className="text-16-medium truncate min-w-0">{categoryTitle}</p>
+        )}
         <Button className="news-card_btn" asChild>
           <Link href={`/news/${_id}`}>Details</Link>
         </Button>

@@ -246,6 +246,51 @@
         @apply text-black-100 text-sm font-normal;
     }
 
+    /* filters */
+    .filter-bar {
+        @apply mt-6 flex flex-col gap-3;
+    }
+
+    .filter-count {
+        @apply text-16-medium !text-black-100;
+    }
+
+    .filter-group {
+        @apply flex items-center gap-2;
+    }
+
+    /*
+     * Category chips overflow horizontally on small screens rather than
+     * wrapping into a tall stack that pushes the articles off the fold.
+     * `-mx-4 px-4` lets the row bleed to the screen edge so it reads as
+     * scrollable, and the padding keeps focus rings from being clipped.
+     */
+    .filter-scroller {
+        @apply flex items-center gap-2 overflow-x-auto pb-1
+               -mx-4 px-4 sm:-mx-1 sm:px-1
+               [scrollbar-width:none] [-ms-overflow-style:none];
+    }
+
+    .filter-scroller::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-chip {
+        @apply inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap
+               rounded-full border-2 border-border bg-white text-black
+               px-3.5 py-1.5 text-sm font-semibold
+               transition-all duration-150 ease-snap
+               hover:bg-primary-100 hover:-translate-y-[1px]
+               active:translate-y-0;
+    }
+
+    .filter-chip--active {
+        /* Ink fill rather than a tint: at a glance you can see which filter is
+           on without relying on a subtle colour difference. */
+        @apply bg-black text-white border-border shadow-100
+               hover:bg-black hover:brightness-110;
+    }
+
     /* profile */
     .profile_container {
         @apply w-full pb-10 pt-14 sm:pt-20 px-4 sm:px-6 max-w-7xl mx-auto lg:flex-row flex-col flex gap-8 lg:gap-10;

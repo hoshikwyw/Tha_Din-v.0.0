@@ -2,13 +2,31 @@ import React from 'react'
 import Form from 'next/form'
 import SearchFormReset from './SearchFormReset'
 import { Search } from 'lucide-react'
+import { DEFAULT_SORT, type SortValue } from '@/lib/news-filters'
 
-const SearchForm = ({ query }: { query: string }) => {
+const SearchForm = ({
+  query,
+  category,
+  sort = DEFAULT_SORT,
+}: {
+  query: string
+  category?: string
+  sort?: SortValue
+}) => {
   return (
     <Form action="/" scroll={false} className="search-form">
       <label htmlFor="search-query" className="sr-only">
         Search news
       </label>
+
+      {/*
+        A GET form submits only its own fields, so without these the active
+        category and sort would be dropped the moment you searched — while the
+        filter links preserve the search term. These keep it symmetric.
+      */}
+      {category && <input type="hidden" name="category" value={category} />}
+      {sort !== DEFAULT_SORT && <input type="hidden" name="sort" value={sort} />}
+
       <input
         id="search-query"
         name="query"

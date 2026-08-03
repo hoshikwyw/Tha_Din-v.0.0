@@ -52,3 +52,14 @@ export const resolveCategoryTitle = (source: unknown): string | null => {
   }
   return null;
 };
+
+/**
+ * Category slug, used to build `/?category=<slug>` filter links. Legacy
+ * documents store the category as a plain title string with no slug, so those
+ * return null and the caller falls back to a plain (unlinked) label.
+ */
+export const resolveCategorySlug = (source: unknown): string | null => {
+  if (!source || typeof source !== "object") return null;
+  const slug = (source as { slug?: { current?: string | null } | null }).slug;
+  return slug?.current ?? null;
+};
