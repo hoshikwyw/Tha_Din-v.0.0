@@ -5,6 +5,7 @@ import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import MDEditor from "@uiw/react-md-editor"
 import { Button } from './ui/button'
+import { Spinner } from './ui/spinner'
 import { Send } from 'lucide-react'
 import { newsFormSchema } from '@/lib/validation'
 import { z } from 'zod'
@@ -238,9 +239,25 @@ const NewsForm = ({ categories }: { categories: CategoryOption[] }) => {
             </div>
 
             {/* FORM SUBMIT BUTTON  */}
-            <Button type='submit' className='news-form_btn' disabled={isPending}>
-                {isPending ? "Submitting..." : "Submit your news"}
-                <Send className='size-6 ml-2' />
+            {/* aria-busy tells assistive tech the control is working; without it
+                the only cue is the visual spinner. */}
+            <Button
+                type='submit'
+                className='news-form_btn'
+                disabled={isPending}
+                aria-busy={isPending}
+            >
+                {isPending ? (
+                    <>
+                        <Spinner />
+                        Publishing…
+                    </>
+                ) : (
+                    <>
+                        Submit your news
+                        <Send className='size-4' />
+                    </>
+                )}
             </Button>
         </form>
     )

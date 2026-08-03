@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { SanityLive } from "@/sanity/lib/live";
+import RouteProgress from "@/components/RouteProgress";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -99,6 +100,9 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>
       <body className={workSans.variable} suppressHydrationWarning>
+        {/* Bridges the gap between a link click and the segment's loading.tsx
+            beginning to stream, which is otherwise dead air on a slow network. */}
+        <RouteProgress />
         {children}
         {/*
           Required for `defineLive` in sanity/lib/live.ts to do anything. Without

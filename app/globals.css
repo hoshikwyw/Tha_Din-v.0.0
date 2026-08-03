@@ -547,6 +547,87 @@
         @apply text-[13px] font-medium bg-white text-black-100
                px-3 py-1.5 rounded-full border border-border shadow-200;
     }
+
+    /* ---------- loading ---------- */
+
+    /*
+     * Skeleton: a flat tint plus a shimmer sweep. The sweep is a pseudo-element
+     * so it never affects layout, and the global prefers-reduced-motion rule
+     * collapses its animation automatically.
+     */
+    .skeleton {
+        @apply relative overflow-hidden bg-muted;
+    }
+
+    .skeleton::after {
+        content: "";
+        @apply absolute inset-0 -translate-x-full;
+        background-image: linear-gradient(
+            90deg,
+            transparent,
+            hsl(var(--surface) / 0.55),
+            transparent
+        );
+        animation: skeleton-shimmer 1.6s infinite;
+    }
+
+    /*
+     * Route transition progress bar. Creeps toward 90% while a navigation is in
+     * flight, then completes and fades once the new route commits — so a slow
+     * network shows continuous movement instead of a frozen page.
+     */
+    .route-progress {
+        @apply fixed inset-x-0 top-0 z-[200] h-[3px] origin-left bg-secondary;
+        transform: scaleX(0);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .route-progress[data-state="loading"] {
+        opacity: 1;
+        transform: scaleX(0.9);
+        /* Long, decelerating ease: fast at first, then crawls — reads as
+           progress without ever claiming to be finished. */
+        transition: transform 10s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.15s;
+    }
+
+    .route-progress[data-state="done"] {
+        opacity: 0;
+        transform: scaleX(1);
+        transition: transform 0.2s ease-out, opacity 0.35s ease-out 0.15s;
+    }
+
+    /*
+     * Full-page veil, shown only once a navigation has already been pending for
+     * a while. `pointer-events-none` is deliberate: it signals waiting without
+     * trapping the user in a modal they cannot dismiss or navigate out of.
+     */
+    .route-overlay {
+        @apply fixed inset-0 z-[190] grid place-items-center
+               bg-background/55 backdrop-blur-[1px];
+        pointer-events: none;
+        animation: route-overlay-in 0.2s ease-out;
+    }
+
+    .route-overlay_card {
+        @apply flex items-center gap-3 rounded-full border border-border bg-white
+               px-4 py-2.5 text-[13px] font-medium text-black shadow-400;
+    }
+}
+
+@keyframes skeleton-shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes route-overlay-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .w-md-editor-toolbar {

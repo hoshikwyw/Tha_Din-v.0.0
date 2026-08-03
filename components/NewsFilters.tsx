@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Clock, Flame } from "lucide-react";
 
+import LinkPending from "@/components/LinkPending";
 import { cn } from "@/lib/utils";
 import {
   buildFilterHref,
@@ -64,6 +65,7 @@ const NewsFilters = ({
               >
                 <Icon className="size-4 shrink-0" aria-hidden="true" />
                 {option.label}
+                <LinkPending />
               </Link>
             );
           })}
@@ -82,6 +84,7 @@ const NewsFilters = ({
             )}
           >
             All
+            <LinkPending />
           </Link>
 
           {selectable.map((category) => {
@@ -100,6 +103,7 @@ const NewsFilters = ({
                 )}
               >
                 {category.title ?? slug}
+                <LinkPending />
               </Link>
             );
           })}

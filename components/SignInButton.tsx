@@ -4,6 +4,8 @@ import { Github } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
+import { Spinner } from "./ui/spinner";
+
 const SignInButton = () => {
   const [isPending, setIsPending] = useState(false);
 
@@ -11,6 +13,7 @@ const SignInButton = () => {
     <button
       type="button"
       disabled={isPending}
+      aria-busy={isPending}
       onClick={() => {
         // The OAuth redirect can take a moment; without feedback the button
         // looked dead and invited repeat clicks.
@@ -22,7 +25,11 @@ const SignInButton = () => {
                  transition-opacity duration-150
                  hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <Github className="size-4 sm:size-5" aria-hidden="true" />
+      {isPending ? (
+        <Spinner />
+      ) : (
+        <Github className="size-4" aria-hidden="true" />
+      )}
       {isPending ? "Signing in…" : "Login"}
     </button>
   );

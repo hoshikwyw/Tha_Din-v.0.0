@@ -4,6 +4,7 @@ import React, { useActionState, useState } from "react";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import { Spinner } from "./ui/spinner";
 import { Send } from "lucide-react";
 import { categorySchema } from "@/lib/validation";
 import { z } from "zod";
@@ -115,9 +116,19 @@ const CategoryForm = () => {
         type="submit"
         className="news-form_btn"
         disabled={isPending}
+        aria-busy={isPending}
       >
-        {isPending ? "Saving..." : "Add category"}
-        <Send className="size-6 ml-2" />
+        {isPending ? (
+          <>
+            <Spinner />
+            Saving…
+          </>
+        ) : (
+          <>
+            Add category
+            <Send className="size-4" />
+          </>
+        )}
       </Button>
     </form>
   );
