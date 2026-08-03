@@ -12,9 +12,10 @@ const CreateNewsPage = async () => {
     const session = await requireAdmin()
     if (!session) redirect('/')
 
+    // Must include a category created seconds ago on the /categories screen.
     const categories = await client
         .withConfig({ useCdn: false })
-        .fetch(CATEGORIES_QUERY)
+        .fetch(CATEGORIES_QUERY, {}, { cache: 'no-store' })
 
   return (
     <>

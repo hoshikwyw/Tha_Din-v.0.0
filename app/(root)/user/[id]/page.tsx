@@ -2,7 +2,7 @@ import { auth } from '@/auth'
 import ImageWithFallback from '@/components/ImageWithFallback'
 import { NewsCardSkeleton } from '@/components/NewsCard'
 import UserNews from '@/components/UserNews'
-import { client } from '@/sanity/lib/client'
+import { client, contentCache } from '@/sanity/lib/client'
 import { AUTHOR_BY_ID_QUERY } from '@/sanity/lib/queries'
 import { notFound } from 'next/navigation'
 import React, { Suspense } from 'react'
@@ -11,7 +11,7 @@ const page = async ({params}: {params: Promise<{id: string}>}) => {
   const id = (await params).id
   const session = await auth()
 
-  const user = await client.fetch(AUTHOR_BY_ID_QUERY, {id})
+  const user = await client.fetch(AUTHOR_BY_ID_QUERY, {id}, contentCache)
   if(!user) return notFound()
 
   return (

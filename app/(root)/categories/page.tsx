@@ -10,9 +10,11 @@ const CategoriesPage = async () => {
   const session = await requireAdmin();
   if (!session) redirect("/");
 
+  // Admin screen: must reflect a category created moments ago, so it skips both
+  // the Sanity CDN and the Next data cache.
   const categories = await client
     .withConfig({ useCdn: false })
-    .fetch(CATEGORIES_QUERY);
+    .fetch(CATEGORIES_QUERY, {}, { cache: "no-store" });
 
   return (
     <>

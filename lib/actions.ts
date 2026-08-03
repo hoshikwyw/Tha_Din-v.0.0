@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import slugify from "slugify";
 import { parseServerActionResponse } from "./utils";
 import { requireAdmin } from "./admin";
@@ -78,6 +79,10 @@ export const createPitch = async (
       pitch: values.pitch,
     });
 
+    // Publish immediately instead of waiting out the revalidate window.
+    revalidatePath("/");
+    revalidatePath(`/user/${session.id}`);
+
     return parseServerActionResponse({
       ...result,
       error: "",
@@ -128,6 +133,9 @@ export const createCategory = async (
       description: values.description,
       slug: { _type: "slug", current: slug },
     });
+
+    revalidatePath("/categories");
+    revalidatePath("/news/create");
 
     return parseServerActionResponse({
       ...result,

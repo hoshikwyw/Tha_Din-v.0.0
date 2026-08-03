@@ -1,5 +1,5 @@
 import { formatDate } from "@/lib/utils";
-import { client } from "@/sanity/lib/client";
+import { client, contentCache } from "@/sanity/lib/client";
 import { NEWS_BY_ID_QUERY, PLAYLIST_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 import { resolveCategoryTitle, resolveImageUrl } from "@/sanity/lib/image";
 import ImageWithFallback from "@/components/ImageWithFallback";
@@ -22,8 +22,8 @@ const NewsDetailPage = async ({
   const id = (await params).id;
 
   const [post, playlist] = await Promise.all([
-    client.fetch(NEWS_BY_ID_QUERY, { id }),
-    client.fetch(PLAYLIST_BY_SLUG_QUERY, { slug: "hot-feed" }),
+    client.fetch(NEWS_BY_ID_QUERY, { id }, contentCache),
+    client.fetch(PLAYLIST_BY_SLUG_QUERY, { slug: "hot-feed" }, contentCache),
   ]);
 
   if (!post) return notFound();

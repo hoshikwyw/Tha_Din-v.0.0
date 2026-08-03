@@ -58,6 +58,11 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
           className="startup-card_img"
           width={500}
           height={500}
+          // This thumbnail is fluid (`w-full`) inside a 1/2/3-column grid.
+          // Without `sizes` the browser assumes 100vw and pulls the largest
+          // srcset candidate — on a phone that is several times the pixels
+          // actually needed.
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
         />
       </Link>
 
