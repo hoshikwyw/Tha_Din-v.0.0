@@ -1,17 +1,48 @@
+import type { Metadata } from 'next'
 import { auth } from '@/auth'
 import ImageWithFallback from '@/components/ImageWithFallback'
 import { NewsCardSkeleton } from '@/components/NewsCard'
 import UserNews from '@/components/UserNews'
-import { client, contentCache } from '@/sanity/lib/client'
-import { AUTHOR_BY_ID_QUERY } from '@/sanity/lib/queries'
+import { absoluteUrl, siteConfig } from '@/lib/site'
+import { getAuthorById } from '@/sanity/lib/fetchers'
 import { notFound } from 'next/navigation'
 import React, { Suspense } from 'react'
 
-const page = async ({params}: {params: Promise<{id: string}>}) => {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const user = await getAuthorById(id)
+
+  if (!user) {
+    return { title: 'Author not found', robots: { index: false, follow: false } }
+  }
+
+  const name = user.name ?? user.username ?? 'Author'
+  const description = user.bio || `Stories written by ${name} on ${siteConfig.name}.`
+
+  return {
+    title: name,
+    description,
+    alternates: { canonical: absoluteUrl(`/user/${id}`) },
+    openGraph: {
+      type: 'profile',
+      title: name,
+      description,
+      url: absoluteUrl(`/user/${id}`),
+      siteName: siteConfig.name,
+      images: user.image ? [user.image] : undefined,
+    },
+  }
+}
+
+const UserProfilePage = async ({params}: {params: Promise<{id: string}>}) => {
   const id = (await params).id
   const session = await auth()
 
-  const user = await client.fetch(AUTHOR_BY_ID_QUERY, {id}, contentCache)
+  const user = await getAuthorById(id)
   if(!user) return notFound()
 
   return (
@@ -50,4 +81,4 @@ const page = async ({params}: {params: Promise<{id: string}>}) => {
   )
 }
 
-export default page
+export default UserProfilePage

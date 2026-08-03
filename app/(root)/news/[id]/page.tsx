@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import { formatDate } from "@/lib/utils";
+import { absoluteUrl, siteConfig } from "@/lib/site";
 import { client, contentCache } from "@/sanity/lib/client";
-import { NEWS_BY_ID_QUERY, PLAYLIST_BY_SLUG_QUERY } from "@/sanity/lib/queries";
+import { getNewsById } from "@/sanity/lib/fetchers";
+import { PLAYLIST_BY_SLUG_QUERY } from "@/sanity/lib/queries";
 import { resolveCategoryTitle, resolveImageUrl } from "@/sanity/lib/image";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
@@ -14,6 +17,52 @@ import NewsCard, { NewsCardType } from "@/components/NewsCard";
 
 const md = markdownit();
 
+/** 1200x630 is the aspect ratio Facebook, X and LinkedIn all crop to. */
+const ogImageFor = (image: unknown) =>
+  resolveImageUrl(image, { width: 1200, height: 630 });
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  // Memoised, so this does not cost a second Sanity round trip — the page
+  // component below calls the same fetcher.
+  const post = await getNewsById(id);
+
+  if (!post) {
+    return { title: "Story not found", robots: { index: false, follow: false } };
+  }
+
+  const url = absoluteUrl(`/news/${id}`);
+  const image = ogImageFor(post.image);
+  const description = post.description ?? siteConfig.description;
+
+  return {
+    title: post.title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title: post.title ?? siteConfig.name,
+      description,
+      url,
+      siteName: siteConfig.name,
+      locale: siteConfig.locale,
+      publishedTime: post._createdAt,
+      authors: post.author?.name ? [post.author.name] : undefined,
+      images: image ? [{ url: image, width: 1200, height: 630, alt: post.title ?? "" }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title ?? siteConfig.name,
+      description,
+      images: image ? [image] : undefined,
+    },
+  };
+}
+
 const NewsDetailPage = async ({
   params,
 }: {
@@ -22,7 +71,7 @@ const NewsDetailPage = async ({
   const id = (await params).id;
 
   const [post, playlist] = await Promise.all([
-    client.fetch(NEWS_BY_ID_QUERY, { id }, contentCache),
+    getNewsById(id),
     client.fetch(PLAYLIST_BY_SLUG_QUERY, { slug: "hot-feed" }, contentCache),
   ]);
 
@@ -32,8 +81,51 @@ const NewsDetailPage = async ({
   const parsedContent = sanitizeHtml(md.render(post?.pitch || ""));
   const thumbnail = resolveImageUrl(post.image, { width: 600, height: 600 });
 
+  // NewsArticle structured data — what makes an article eligible for Google
+  // News and rich results. `dateModified` reuses `_createdAt` because the
+  // GROQ query does not select `_updatedAt`; adding a field there would
+  // invalidate the generated query types until `npm run typegen` reruns.
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: post.title,
+    description: post.description,
+    datePublished: post._createdAt,
+    dateModified: post._createdAt,
+    mainEntityOfPage: { "@type": "WebPage", "@id": absoluteUrl(`/news/${id}`) },
+    ...(ogImageFor(post.image) ? { image: [ogImageFor(post.image)] } : {}),
+    ...(post.author?.name
+      ? {
+          author: {
+            "@type": "Person",
+            name: post.author.name,
+            url: absoluteUrl(`/user/${post.author._id}`),
+          },
+        }
+      : {}),
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/logo.png"),
+      },
+    },
+    ...(resolveCategoryTitle(post.category)
+      ? { articleSection: resolveCategoryTitle(post.category) }
+      : {}),
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        // Serialised from trusted CMS fields only; JSON.stringify escapes the
+        // values, and `<` is escaped to close off `</script>` injection.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <section className="pink_container !min-h-[230px]">
         <p className="tag">{formatDate(post?._createdAt)}</p>
         <h1 className="heading">{post.title}</h1>

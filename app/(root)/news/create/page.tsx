@@ -1,4 +1,12 @@
+import type { Metadata } from 'next'
 import { requireAdmin } from '@/lib/admin'
+
+// Admin-only screen: keep it out of search results entirely.
+export const metadata: Metadata = {
+    title: 'Create News',
+    robots: { index: false, follow: false },
+}
+
 import NewsForm from '@/components/NewsForm'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'

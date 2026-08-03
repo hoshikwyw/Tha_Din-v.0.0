@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/admin";
+
+// Admin-only screen: keep it out of search results entirely.
+export const metadata: Metadata = {
+  title: "Manage Categories",
+  robots: { index: false, follow: false },
+};
+
 import { redirect } from "next/navigation";
 import React from "react";
 import { client } from "@/sanity/lib/client";

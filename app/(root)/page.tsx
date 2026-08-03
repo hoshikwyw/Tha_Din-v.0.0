@@ -1,7 +1,35 @@
+import type { Metadata } from "next";
 import NewsCard, { NewsCardType } from "@/components/NewsCard";
 import SearchForm from "@/components/SearchForm";
+import { absoluteUrl, siteConfig } from "@/lib/site";
 import { sanityFetch } from "@/sanity/lib/live";
 import { newsQuery } from "@/sanity/lib/queries";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ query?: string }>;
+}): Promise<Metadata> {
+  const query = (await searchParams).query;
+
+  // Search result pages are excluded from the index: they are effectively
+  // infinite, thin, and duplicate the content of the pages they link to.
+  if (query) {
+    return {
+      title: `Search results for "${query}"`,
+      robots: { index: false, follow: true },
+      alternates: { canonical: absoluteUrl("/") },
+    };
+  }
+
+  return {
+    // `absolute` bypasses the root layout's `%s | Tha Din` template, which
+    // would otherwise render "Tha Din — Curated News Highlights | Tha Din".
+    title: { absolute: siteConfig.title },
+    description: siteConfig.description,
+    alternates: { canonical: absoluteUrl("/") },
+  };
+}
 
 export default async function Home({
   searchParams,

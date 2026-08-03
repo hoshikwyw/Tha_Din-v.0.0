@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { SanityLive } from "@/sanity/lib/live";
+import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 // Only the weights the UI actually uses are declared. Thin/ExtraLight/Light
@@ -22,8 +23,44 @@ const workSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Tha Din",
-  description: "Collection of civil wars in Myanmar",
+  // Required for relative OG/Twitter image paths to resolve to absolute URLs.
+  // Social crawlers reject relative ones, so without this shared links lose
+  // their preview image entirely.
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    // Article pages supply just their headline; this appends the site name.
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    locale: siteConfig.locale,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export default function RootLayout({

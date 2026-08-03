@@ -106,3 +106,15 @@ export const CATEGORIES_QUERY = defineQuery(`*[_type == "category"] | order(titl
   slug,
   description
 }`);
+
+/** Minimal projection for app/sitemap.ts — ids and timestamps only. */
+export const NEWS_SITEMAP_QUERY = defineQuery(`*[_type == "news" && defined(slug.current)] | order(_updatedAt desc) {
+  _id,
+  _updatedAt
+}`);
+
+/** Minimal projection for app/sitemap.ts — author profile pages. */
+export const AUTHORS_SITEMAP_QUERY = defineQuery(`*[_type == "author"] | order(_updatedAt desc) {
+  _id,
+  _updatedAt
+}`);
