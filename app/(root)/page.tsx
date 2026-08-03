@@ -36,15 +36,18 @@ export default async function Home({
         <p className="text-30-semibold text-white">
           {query ? `Search result for "${query}"` : "All news"}
         </p>
-        <ul className="mt-7 card_grid">
-          {posts?.length > 0 ? (
-            posts.map((post: StartupTypeCard) => (
+        {/* The empty state lives outside the <ul>: a bare <p> is not valid as a
+            direct child of a list, and an empty <ul> is meaningless to a
+            screen reader. */}
+        {posts?.length > 0 ? (
+          <ul className="mt-7 card_grid">
+            {posts.map((post: StartupTypeCard) => (
               <NewsCard key={post?._id} post={post} />
-            ))
-          ) : (
-            <p className="no-result">No news found</p>
-          )}
-        </ul>
+            ))}
+          </ul>
+        ) : (
+          <p className="no-result mt-7">No news found</p>
+        )}
       </section>
     </>
   );

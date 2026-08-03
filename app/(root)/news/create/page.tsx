@@ -23,7 +23,7 @@ const CreateNewsPage = async () => {
             <h1 className="heading">Create Your News</h1>
         </section>
         {categories.length === 0 && (
-            <p className="max-w-3xl mx-auto mt-6 text-center">
+            <p className="max-w-3xl mx-auto mt-6 px-4 sm:px-6 text-center">
                 No categories exist yet.{" "}
                 <Link href="/categories" className="underline font-semibold">
                     Create one first

@@ -53,32 +53,36 @@ const NewsDetailPage = async ({
           </div>
         )}
 
-        <div className="space-y-5 mt-10 max-w-4xl mx-auto">
-          <div className="flex-between gap-5">
+        <div className="space-y-5 mt-8 sm:mt-10 max-w-4xl mx-auto">
+          {/* Stacks on phones: side-by-side, the author block and the category
+              pill were crushing each other at narrow widths. */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <Link
               href={`/user/${post.author?._id}`}
-              className="flex gap-2 items-center mb-3"
+              className="flex gap-2 items-center min-w-0"
             >
               <ImageWithFallback
                 src={post.author?.image}
                 alt={post.author?.name ?? "profile"}
                 width={64}
                 height={64}
-                className="border border-black rounded-full drop-shadow-lg"
+                className="border border-black rounded-full drop-shadow-lg shrink-0"
               />
-              <div>
-                <p className="text-20-medium">{post.author?.name}</p>
-                <p className="text-16-medium !text-secondary">
+              <div className="min-w-0">
+                <p className="text-20-medium truncate">{post.author?.name}</p>
+                <p className="text-16-medium !text-secondary truncate">
                   @{post.author?.username}
                 </p>
               </div>
             </Link>
 
-            <div className="flex gap-1.5">
-              <p className="category-tag">
-                {resolveCategoryTitle(post.category)}
-              </p>
-            </div>
+            {resolveCategoryTitle(post.category) && (
+              <div className="flex gap-1.5 shrink-0">
+                <p className="category-tag">
+                  {resolveCategoryTitle(post.category)}
+                </p>
+              </div>
+            )}
           </div>
 
           {parsedContent ? (

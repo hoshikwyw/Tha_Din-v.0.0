@@ -11,7 +11,8 @@ const UserNews = async ({id} : {id: string}) => {
     {news.length > 0 ? news.map((startup: StartupTypeCard) => (
         <NewsCard key={startup._id} post={startup} />
     )) : (
-        <p className="no-result">No news yet</p>
+        // Rendered into the parent's <ul>, so the empty state has to be an <li>.
+        <li className="no-result list-none">No news yet</li>
     )}
     </>
   )
