@@ -1,4 +1,5 @@
-import { auth, signOut } from '@/auth'
+import { signOut } from '@/auth'
+import { getSessionWithRole } from '@/lib/admin'
 import { BadgePlus, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
@@ -6,10 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import SignInButton from './SignInButton'
 
 const Navbar = async () => {
-    const session = await auth()
-    // console.log(session?.user?.email,">>>>>>>>");
-    const isAdmin = session?.user?.email === process.env.ADMIN_GMAIL
-    
+    const { session, isAdmin } = await getSessionWithRole()
 
   return (
     <header className=' px-5 py-3 bg-white shadow-sm font-work-sans'>

@@ -1,13 +1,14 @@
 import { z } from "zod";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+// SVG is intentionally excluded: it is an executable document, and serving one
+// from our own origin is a stored-XSS vector. News thumbnails are photos.
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
   "image/png",
   "image/gif",
   "image/webp",
-  "image/svg+xml",
 ];
 
 export const formSchema = z.object({
@@ -20,7 +21,7 @@ export const formSchema = z.object({
     .refine((file) => file.size <= MAX_IMAGE_BYTES, "Image must be 5MB or smaller")
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
-      "Image must be jpg, png, gif, webp, or svg",
+      "Image must be a jpg, png, gif, or webp",
     ),
   pitch: z.string().min(10),
 });

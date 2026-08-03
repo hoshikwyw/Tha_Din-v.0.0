@@ -1,22 +1,31 @@
-import {withSentryConfig} from "@sentry/nextjs";
+import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
+import { ALLOWED_IMAGE_HOSTS } from "./lib/images";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Type errors now fail the build. They were being ignored, which is how the
+  // broken `next-auth.d.ts` module augmentation went unnoticed.
   typescript: {
-    ignoreBuildErrors: true
+    ignoreBuildErrors: false,
   },
   eslint: {
-    ignoreDuringBuilds: true
+    // TODO(part 6): flip to false once the remaining `any`s in the form
+    // components and server actions are typed.
+    ignoreDuringBuilds: true,
   },
   images: {
-    dangerouslyAllowSVG: true,
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "*",
-      }
-    ]
+    // Previously `hostname: "*"`, which turned the optimiser into an open image
+    // proxy: anyone could pass /_next/image?url=<any-url> and have this server
+    // fetch it, burning bandwidth and laundering requests through our IP.
+    remotePatterns: ALLOWED_IMAGE_HOSTS.map((hostname) => ({
+      protocol: "https" as const,
+      hostname,
+    })),
+    // `dangerouslyAllowSVG` was on. SVGs are executable documents; serving one
+    // from our own origin is a stored-XSS vector. The placeholder fallback is an
+    // inline data: URI rendered with `unoptimized`, so it does not need this.
+    dangerouslyAllowSVG: false,
+    contentDispositionType: "attachment",
   },
 };
 

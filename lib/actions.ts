@@ -1,76 +1,82 @@
 "use server";
 
-import { auth } from "@/auth";
-import { parseServerActionResponse } from "./utils";
+import { z } from "zod";
 import slugify from "slugify";
+import { parseServerActionResponse } from "./utils";
+import { requireAdmin } from "./admin";
+import { categorySchema, formSchema } from "./validation";
 import { writeClient } from "@/sanity/lib/write-client";
 
+export type ActionResponse = {
+  error: string;
+  status: "INITIAL" | "SUCCESS" | "ERROR";
+  /** Present only on a successful create — the new document id. */
+  _id?: string;
+};
+
+const UNAUTHORIZED = {
+  // Deliberately identical for "not signed in" and "signed in but not an admin",
+  // so the response can't be used to probe who holds admin.
+  error: "You are not allowed to perform this action",
+  status: "ERROR" as const,
+};
+
+/** Turn a ZodError into the single message most useful to the user. */
+const firstZodMessage = (error: z.ZodError) =>
+  error.errors[0]?.message ?? "Please check your inputs and try again";
+
 export const createPitch = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: any,
   form: FormData,
   pitch: string,
-) => {
-  const session = await auth();
+): Promise<ActionResponse> => {
+  const session = await requireAdmin();
+  if (!session) return parseServerActionResponse(UNAUTHORIZED);
 
-  if (!session)
-    return parseServerActionResponse({
-      error: "Not signed in",
-      status: "ERROR",
+  // Re-validate on the server. The client-side check in the form is a UX
+  // affordance only — a server action is a public HTTP endpoint and can be
+  // called directly with any payload.
+  let values;
+  try {
+    values = await formSchema.parseAsync({
+      title: form.get("title"),
+      description: form.get("description"),
+      category: form.get("category"),
+      image: form.get("image"),
+      pitch,
     });
-
-  const title = form.get("title") as string;
-  const description = form.get("description") as string;
-  const category = form.get("category") as string;
-  const imageFile = form.get("image") as File | null;
-
-  if (!imageFile || !(imageFile instanceof File) || imageFile.size === 0) {
-    return parseServerActionResponse({
-      error: "Image is required",
-      status: "ERROR",
-    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return parseServerActionResponse({
+        error: firstZodMessage(error),
+        status: "ERROR",
+      });
+    }
+    throw error;
   }
 
-  if (!category) {
-    return parseServerActionResponse({
-      error: "Category is required",
-      status: "ERROR",
-    });
-  }
-
-  const slug = slugify(title, { lower: true, strict: true });
+  const slug = slugify(values.title, { lower: true, strict: true });
 
   try {
-    const imageAsset = await writeClient.assets.upload("image", imageFile, {
-      filename: imageFile.name,
+    const imageAsset = await writeClient.assets.upload("image", values.image, {
+      filename: values.image.name,
     });
 
-    const news = {
-      title,
-      description,
+    const result = await writeClient.create({
+      _type: "news",
+      title: values.title,
+      description: values.description,
       views: 0,
-      category: {
-        _type: "reference",
-        _ref: category,
-      },
+      category: { _type: "reference", _ref: values.category },
       image: {
         _type: "image",
-        asset: {
-          _type: "reference",
-          _ref: imageAsset._id,
-        },
+        asset: { _type: "reference", _ref: imageAsset._id },
       },
-      slug: {
-        _type: "slug",
-        current: slug,
-      },
-      author: {
-        _type: "reference",
-        _ref: session?.id,
-      },
-      pitch,
-    };
-
-    const result = await writeClient.create({ _type: "news", ...news });
+      slug: { _type: "slug", current: slug },
+      author: { _type: "reference", _ref: session.id },
+      pitch: values.pitch,
+    });
 
     return parseServerActionResponse({
       ...result,
@@ -78,45 +84,49 @@ export const createPitch = async (
       status: "SUCCESS",
     });
   } catch (error) {
-    console.log(error);
+    // Log the real error server-side; never serialise it to the client, it can
+    // carry the Sanity project id, dataset, and token-scope details.
+    console.error("[createPitch] failed", error);
 
     return parseServerActionResponse({
-      error: JSON.stringify(error),
+      error: "Could not publish this news item. Please try again.",
       status: "ERROR",
     });
   }
 };
 
-export const createCategory = async (state: any, form: FormData) => {
-  const session = await auth();
+export const createCategory = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state: any,
+  form: FormData,
+): Promise<ActionResponse> => {
+  const session = await requireAdmin();
+  if (!session) return parseServerActionResponse(UNAUTHORIZED);
 
-  if (!session)
-    return parseServerActionResponse({
-      error: "Not signed in",
-      status: "ERROR",
+  let values;
+  try {
+    values = await categorySchema.parseAsync({
+      title: (form.get("title") as string)?.trim(),
+      description: (form.get("description") as string)?.trim() || undefined,
     });
-
-  const title = (form.get("title") as string)?.trim();
-  const description = (form.get("description") as string)?.trim();
-
-  if (!title) {
-    return parseServerActionResponse({
-      error: "Title is required",
-      status: "ERROR",
-    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return parseServerActionResponse({
+        error: firstZodMessage(error),
+        status: "ERROR",
+      });
+    }
+    throw error;
   }
 
-  const slug = slugify(title, { lower: true, strict: true });
+  const slug = slugify(values.title, { lower: true, strict: true });
 
   try {
     const result = await writeClient.create({
       _type: "category",
-      title,
-      description: description || undefined,
-      slug: {
-        _type: "slug",
-        current: slug,
-      },
+      title: values.title,
+      description: values.description,
+      slug: { _type: "slug", current: slug },
     });
 
     return parseServerActionResponse({
@@ -125,10 +135,10 @@ export const createCategory = async (state: any, form: FormData) => {
       status: "SUCCESS",
     });
   } catch (error) {
-    console.log(error);
+    console.error("[createCategory] failed", error);
 
     return parseServerActionResponse({
-      error: JSON.stringify(error),
+      error: "Could not create this category. Please try again.",
       status: "ERROR",
     });
   }

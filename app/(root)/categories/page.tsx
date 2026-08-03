@@ -1,12 +1,13 @@
-import { auth } from "@/auth";
+import { requireAdmin } from "@/lib/admin";
 import { redirect } from "next/navigation";
 import React from "react";
 import { client } from "@/sanity/lib/client";
 import { CATEGORIES_QUERY } from "@/sanity/lib/queries";
 import CategoryForm from "@/components/CategoryForm";
 
-const page = async () => {
-  const session = await auth();
+const CategoriesPage = async () => {
+  // Managing categories is admin-only; `createCategory` enforces the same gate.
+  const session = await requireAdmin();
   if (!session) redirect("/");
 
   const categories = await client
@@ -30,7 +31,7 @@ const page = async () => {
               <p>No categories yet.</p>
             ) : (
               <ul className="grid gap-3">
-                {categories.map((c) => (
+                {categories.map((c: { _id: string; title: string | null; description?: string | null }) => (
                   <li
                     key={c._id}
                     className="rounded-xl border border-black p-4 bg-white"
@@ -52,4 +53,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default CategoriesPage;

@@ -2,6 +2,7 @@ import createImageUrlBuilder from '@sanity/image-url'
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
 import { dataset, projectId } from '../env'
+import { isAllowedImageSrc } from '@/lib/images'
 
 const builder = createImageUrlBuilder({ projectId, dataset })
 
@@ -19,7 +20,12 @@ export const resolveImageUrl = (
   opts?: { width?: number; height?: number },
 ): string | null => {
   if (!source) return null;
-  if (typeof source === "string") return source;
+  // Legacy documents store a bare URL string pointing at an arbitrary host.
+  // Anything outside the optimiser allowlist is dropped so the caller renders a
+  // fallback instead of crashing the page.
+  if (typeof source === "string") {
+    return isAllowedImageSrc(source) ? source : null;
+  }
   if (typeof source === "object") {
     try {
       let b = builder.image(source as SanityImageSource);

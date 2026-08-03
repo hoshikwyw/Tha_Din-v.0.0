@@ -1,4 +1,4 @@
-import { auth } from '@/auth'
+import { requireAdmin } from '@/lib/admin'
 import StartupForm from '@/components/StartupForm'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -6,9 +6,11 @@ import React from 'react'
 import { client } from '@/sanity/lib/client'
 import { CATEGORIES_QUERY } from '@/sanity/lib/queries'
 
-const page = async () => {
-    const session = await auth()
-    if(!session) redirect('/')
+const CreateNewsPage = async () => {
+    // Publishing is admin-only. This mirrors the gate in `createPitch`; the
+    // action enforces it too, since a redirect here is only a UI convenience.
+    const session = await requireAdmin()
+    if (!session) redirect('/')
 
     const categories = await client
         .withConfig({ useCdn: false })
@@ -33,4 +35,4 @@ const page = async () => {
   )
 }
 
-export default page
+export default CreateNewsPage
