@@ -86,19 +86,23 @@ const config: Config = {
                 "work-sans": ["var(--font-work-sans)"],
             },
             borderRadius: {
+                // One radius scale, derived from a single base. The old design
+                // mixed 10px, 20px, 22px, 30px and 9999px arbitrarily, which is
+                // most of why it read as messy.
+                sm: "calc(var(--radius) - 6px)",
+                md: "calc(var(--radius) - 4px)",
                 lg: "var(--radius)",
-                md: "calc(var(--radius) - 2px)",
-                sm: "calc(var(--radius) - 4px)",
+                xl: "calc(var(--radius) + 4px)",
+                "2xl": "calc(var(--radius) + 8px)",
             },
             boxShadow: {
-                // The offset "hard" shadows are the brand. They were hardcoded to
-                // pure black, which is invisible against a dark background, so
-                // the colour is a variable now too.
-                100: "2px 2px 0px 0px hsl(var(--shadow))",
-                200: "2px 2px 0px 2px hsl(var(--shadow))",
-                300: "2px 2px 0px 2px hsl(var(--shadow-accent))",
-                400: "2px 2px 0px 2px hsl(var(--shadow-highlight))",
-                lift: "6px 6px 0px 0px hsl(var(--shadow))",
+                // Soft, diffuse elevation replacing the hard offset shadows.
+                // Names are unchanged so existing markup keeps working.
+                100: "0 1px 2px 0 hsl(var(--shadow) / 0.05)",
+                200: "0 1px 3px 0 hsl(var(--shadow) / 0.06), 0 1px 2px -1px hsl(var(--shadow) / 0.04)",
+                300: "0 4px 12px -2px hsl(var(--shadow) / 0.08)",
+                400: "0 10px 28px -8px hsl(var(--shadow) / 0.14)",
+                lift: "0 14px 36px -14px hsl(var(--shadow) / 0.22)",
             },
             transitionTimingFunction: {
                 snap: "cubic-bezier(0.22, 1, 0.36, 1)",

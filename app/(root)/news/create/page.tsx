@@ -27,7 +27,7 @@ const CreateNewsPage = async () => {
 
   return (
     <>
-        <section className="pink_container !min-h-[230px]">
+        <section className="pink_container">
             <h1 className="heading">Create Your News</h1>
         </section>
         {categories.length === 0 && (

@@ -26,7 +26,7 @@ const CategoriesPage = async () => {
 
   return (
     <>
-      <section className="pink_container !min-h-[230px]">
+      <section className="pink_container">
         <h1 className="heading">Manage Categories</h1>
       </section>
       <section className="section_container">
@@ -44,11 +44,13 @@ const CategoriesPage = async () => {
                 {categories.map((c: { _id: string; title: string | null; description?: string | null }) => (
                   <li
                     key={c._id}
-                    className="rounded-xl border border-border p-4 bg-white"
+                    className="rounded-lg border border-border p-4 bg-white"
                   >
-                    <p className="text-20-medium">{c.title}</p>
+                    <p className="text-[15px] font-semibold text-black">
+                      {c.title}
+                    </p>
                     {c.description && (
-                      <p className="text-16-medium !text-secondary mt-1">
+                      <p className="text-[14px] text-black-100 mt-1">
                         {c.description}
                       </p>
                     )}

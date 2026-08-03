@@ -9,13 +9,13 @@ export default function Loading() {
   return (
     <>
       <section className="pink_container">
-        <Skeleton className="h-[46px] sm:h-[64px] w-full max-w-5xl bg-black/20 rounded-lg" />
-        <Skeleton className="mt-5 h-6 w-full max-w-2xl bg-black/10 rounded-lg" />
-        <Skeleton className="mt-8 h-[80px] w-full max-w-3xl bg-white/60 rounded-[80px]" />
+        <Skeleton className="h-10 sm:h-14 w-full max-w-3xl bg-muted rounded-lg" />
+        <Skeleton className="mt-5 h-5 w-full max-w-xl bg-muted rounded-lg" />
+        <Skeleton className="mt-8 h-12 w-full max-w-xl bg-muted rounded-full" />
       </section>
 
       <section className="section_container">
-        <Skeleton className="h-9 w-40 bg-white/40 rounded-lg" />
+        <Skeleton className="h-8 w-40 bg-muted rounded-lg" />
         <ul className="mt-7 card_grid">
           <NewsCardSkeleton />
         </ul>

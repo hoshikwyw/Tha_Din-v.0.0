@@ -8,111 +8,106 @@
 
 @layer base {
     :root {
-        --radius: 0.5rem;
+        /*
+         * Single radius base. Everything else is derived from it in
+         * tailwind.config.ts, so the whole UI shares one corner language.
+         */
+        --radius: 0.75rem;
 
         /*
-         * Fluid type scale. Each value interpolates between a mobile size at a
-         * 320px viewport and the original desktop size at 1280px, so text
-         * scales continuously instead of snapping at a single `sm:` breakpoint.
-         * Names keep their original "-30-", "-26-" numbering: that number is
-         * still the size at desktop.
+         * Fluid type scale, interpolating between a 320px and a 1280px viewport
+         * so text scales continuously instead of snapping at one breakpoint.
          */
-        --fs-30: clamp(1.375rem, 1.2083rem + 0.8333vw, 1.875rem);   /* 22 -> 30 */
-        --fs-26: clamp(1.25rem, 1.125rem + 0.625vw, 1.625rem);      /* 20 -> 26 */
-        --fs-24: clamp(1.1875rem, 1.0833rem + 0.5208vw, 1.5rem);    /* 19 -> 24 */
-        --fs-20: clamp(1.0625rem, 1rem + 0.3125vw, 1.25rem);        /* 17 -> 20 */
-        --fs-heading: clamp(1.75rem, 1.2083rem + 2.7083vw, 3.375rem); /* 28 -> 54 */
-        --fs-subheading: clamp(1rem, 0.9167rem + 0.4167vw, 1.25rem);  /* 16 -> 20 */
+        --fs-30: clamp(1.375rem, 1.2083rem + 0.8333vw, 1.875rem);     /* 22 -> 30 */
+        --fs-26: clamp(1.25rem, 1.125rem + 0.625vw, 1.625rem);        /* 20 -> 26 */
+        --fs-24: clamp(1.1875rem, 1.0833rem + 0.5208vw, 1.5rem);      /* 19 -> 24 */
+        --fs-20: clamp(1.0625rem, 1rem + 0.3125vw, 1.25rem);          /* 17 -> 20 */
+        --fs-heading: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);            /* 32 -> 56 */
+        --fs-subheading: clamp(1rem, 0.9583rem + 0.2083vw, 1.125rem); /* 16 -> 18 */
 
         /*
-         * LIGHT THEME — HSL channel triplets consumed by tailwind.config.ts.
-         * Hues match the original brand palette, so light mode keeps its
-         * identity; only contrast problems were corrected.
+         * EDITORIAL MONOCHROME — light.
+         * Near-white page, white cards, near-black ink, hairline rules, and a
+         * single deep-amber accent used sparingly for links and emphasis.
          */
-        --background: 39 68% 88%;      /* cream page  #F5E6CA */
-        --foreground: 211 28% 25%;     /* navy ink    #2D3E50 */
+        --background: 60 9% 98%;       /* #FAFAF9 */
+        --foreground: 232 12% 9%;      /* #14151A */
 
-        --primary: 39 68% 88%;
-        --primary-100: 39 30% 92%;
-        --secondary: 23 72% 68%;       /* warm orange #E89F71 */
-        --accent: 344 41% 75%;         /* dusty rose  #D9A5B3 */
+        --primary: 60 9% 98%;
+        --primary-100: 30 6% 96%;      /* subtle fill */
+        --secondary: 28 90% 34%;       /* #A64F08 amber accent */
+        --accent: 34 60% 95%;          /* soft amber tint for pills */
 
-        --ink: 211 28% 25%;
-        /* Was #A8A8A8 (66% lightness) for body copy — only ~2.3:1 on the card
-           surface, below the 4.5:1 minimum. Darkened to pass. */
-        --ink-100: 211 14% 40%;
-        --ink-200: 211 14% 40%;
-        --ink-300: 211 28% 25%;
-        --ink-400: 211 14% 46%;
+        --ink: 232 12% 9%;
+        --ink-100: 30 5% 40%;          /* muted body copy */
+        --ink-200: 30 5% 40%;
+        --ink-300: 232 12% 9%;
+        /* Placeholders are still text under WCAG. At 52% lightness this was
+           3.66:1 on a white input; 45% clears the 4.5:1 threshold. */
+        --ink-400: 30 5% 45%;
 
-        --surface: 36 100% 97%;        /* card        #FFF9F0 */
-        --surface-100: 36 100% 97%;
+        --surface: 0 0% 100%;          /* cards sit above the page */
+        --surface-100: 0 0% 100%;
 
-        --border: 211 28% 25%;
-        --input: 211 28% 25%;
-        --ring: 23 72% 48%;
+        --border: 20 6% 89%;           /* hairline */
+        --input: 20 6% 86%;
+        --ring: 28 90% 40%;
 
-        --card: 36 100% 97%;
-        --card-foreground: 211 28% 25%;
-        --popover: 36 100% 97%;
-        --popover-foreground: 211 28% 25%;
-        --muted: 39 35% 92%;
-        --muted-foreground: 211 14% 40%;
-        --destructive: 0 70% 45%;
+        --card: 0 0% 100%;
+        --card-foreground: 232 12% 9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 232 12% 9%;
+        --muted: 30 6% 96%;
+        --muted-foreground: 30 5% 40%;
+        --destructive: 0 65% 42%;
         --destructive-foreground: 0 0% 100%;
-        --success: 142 60% 30%;
+        --success: 152 45% 28%;
         --success-foreground: 0 0% 100%;
 
-        /* Text sitting on the orange hero. Near-white failed contrast there. */
-        --hero-fg: 211 34% 18%;
+        /* Standfirst text — the hero now sits on the page background. */
+        --hero-fg: 30 5% 40%;
 
-        --shadow: 211 28% 25%;
-        --shadow-accent: 340 75% 50%;
-        --shadow-highlight: 43 62% 45%;
+        --shadow: 232 20% 12%;
 
         color-scheme: light;
     }
 
     .dark {
-        --background: 216 32% 9%;
-        --foreground: 210 25% 92%;
+        --background: 240 6% 7%;       /* #111114 */
+        --foreground: 60 6% 95%;
 
-        --primary: 216 32% 9%;
-        --primary-100: 216 20% 18%;
-        --secondary: 20 40% 32%;       /* deep terracotta hero */
-        --accent: 344 30% 44%;         /* deep rose */
+        --primary: 240 6% 7%;
+        --primary-100: 228 7% 14%;
+        --secondary: 38 92% 58%;       /* amber lifts for dark backgrounds */
+        --accent: 30 18% 16%;
 
-        --ink: 210 25% 92%;
-        --ink-100: 214 14% 68%;
-        --ink-200: 214 14% 68%;
-        --ink-300: 210 25% 92%;
-        --ink-400: 214 12% 60%;
+        --ink: 60 6% 95%;
+        --ink-100: 30 5% 66%;
+        --ink-200: 30 5% 66%;
+        --ink-300: 60 6% 95%;
+        --ink-400: 30 4% 52%;
 
-        --surface: 216 24% 13%;
-        --surface-100: 216 24% 13%;
+        --surface: 228 8% 11%;         /* #1A1B1F */
+        --surface-100: 228 8% 11%;
 
-        /* A 5px border at full ink contrast is right on paper-like light mode
-           but overwhelming on dark, so borders drop to a mid-tone. */
-        --border: 214 16% 34%;
-        --input: 214 16% 34%;
-        --ring: 23 85% 60%;
+        --border: 228 7% 19%;
+        --input: 228 7% 22%;
+        --ring: 38 92% 58%;
 
-        --card: 216 24% 13%;
-        --card-foreground: 210 25% 92%;
-        --popover: 216 24% 16%;
-        --popover-foreground: 210 25% 92%;
-        --muted: 216 20% 20%;
-        --muted-foreground: 214 14% 68%;
-        --destructive: 0 62% 50%;
+        --card: 228 8% 11%;
+        --card-foreground: 60 6% 95%;
+        --popover: 228 8% 13%;
+        --popover-foreground: 60 6% 95%;
+        --muted: 228 7% 16%;
+        --muted-foreground: 30 5% 66%;
+        --destructive: 0 62% 52%;
         --destructive-foreground: 0 0% 100%;
-        --success: 142 45% 42%;
+        --success: 152 40% 45%;
         --success-foreground: 0 0% 100%;
 
-        --hero-fg: 36 45% 94%;
+        --hero-fg: 30 5% 66%;
 
-        --shadow: 216 50% 4%;
-        --shadow-accent: 340 55% 42%;
-        --shadow-highlight: 43 50% 42%;
+        --shadow: 0 0% 0%;
 
         color-scheme: dark;
     }
@@ -123,15 +118,12 @@
     }
 
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background text-foreground antialiased;
     }
 
-    /*
-     * The design had no visible focus indicator anywhere, which makes the site
-     * unusable by keyboard. This restores one without affecting mouse users.
-     */
+    /* Keyboard focus indicator — the original design had none at all. */
     :focus-visible {
-        outline: 3px solid hsl(var(--ring));
+        outline: 2px solid hsl(var(--ring));
         outline-offset: 2px;
     }
 
@@ -154,117 +146,118 @@
 }
 
 @layer utilities {
-    .flex-between {
-        @apply flex justify-between items-center;
-    }
+    /* ---------- type scale ---------- */
 
     .text-30-extrabold {
-        /* Was `text-white` (#FFF9F0) but only ever rendered on the cream
-           `.profile_card`, i.e. near-invisible. Uses ink now. */
-        @apply font-extrabold text-black;
+        @apply font-bold text-black tracking-tight;
         font-size: var(--fs-30);
     }
 
     .text-30-bold {
-        @apply font-bold text-black;
+        @apply font-bold text-black tracking-tight;
         font-size: var(--fs-30);
     }
 
     .text-30-semibold {
-        @apply font-semibold text-black;
+        @apply font-bold text-black tracking-tight;
         font-size: var(--fs-30);
     }
 
     .text-26-semibold {
-        @apply font-semibold text-black;
+        @apply font-bold text-black tracking-tight;
         font-size: var(--fs-26);
     }
 
     .text-24-black {
-        @apply font-black text-black;
+        @apply font-bold text-black tracking-tight;
         font-size: var(--fs-24);
     }
 
     .text-20-medium {
-        @apply font-medium text-black;
+        @apply font-semibold text-black;
         font-size: var(--fs-20);
     }
 
     .text-16-medium {
-        @apply font-medium text-[16px] text-black;
+        @apply font-medium text-[15px] text-black;
     }
 
     .text-14-normal {
-        /* Same problem: a near-white bio on the cream profile card. */
-        @apply font-normal text-sm text-black-100;
+        @apply font-normal text-sm text-black-100 leading-relaxed;
     }
 
+    /* Small-caps meta label — the recurring editorial device for category,
+       date and section markers. */
+    .eyebrow {
+        @apply text-[11px] font-semibold uppercase tracking-[0.14em];
+    }
+
+    /* ---------- page header ---------- */
+
     .pink_container {
-        /* Was a flat min-h-[530px]: on a phone that filled the entire screen
-           and pushed every article below the fold, and in landscape it left no
-           room for content at all. */
-        @apply w-full bg-secondary min-h-[380px] sm:min-h-[460px] lg:min-h-[530px]
-               pattern flex justify-center items-center flex-col
-               py-8 sm:py-10 px-4 sm:px-6;
+        /*
+         * Was a 530px saturated orange block with a stripe pattern behind an
+         * inverted black heading slab. Now a quiet header on the page
+         * background, separated by a single hairline — the whitespace does the
+         * work instead of colour.
+         */
+        @apply w-full bg-background border-b border-border
+               flex flex-col items-center justify-center text-center
+               px-4 sm:px-6 py-14 sm:py-20 lg:py-24;
     }
 
     .tag {
-        @apply bg-accent px-4 sm:px-6 py-2 sm:py-3 font-work-sans font-bold rounded-sm uppercase relative tag-tri text-sm sm:text-base;
+        @apply eyebrow text-secondary mb-4;
     }
 
     .heading {
-        @apply uppercase bg-black px-4 sm:px-6 py-3 font-work-sans font-extrabold text-white
-               max-w-5xl text-center my-5 break-words;
+        /* No uppercase, no inverted slab. Tight tracking and a heavy weight
+           carry the emphasis instead. */
+        @apply font-work-sans font-extrabold text-black max-w-4xl text-balance;
         font-size: var(--fs-heading);
-        line-height: 1.18;
+        line-height: 1.08;
+        letter-spacing: -0.03em;
     }
 
     .sub-heading {
-        /* `text-white` on the orange hero was roughly 1.6:1. `--hero-fg` is
-           dark on light-mode orange and light on dark-mode terracotta. */
-        @apply font-medium text-hero-fg max-w-2xl text-center break-words;
+        @apply font-normal text-hero-fg max-w-2xl mt-5 text-pretty;
         font-size: var(--fs-subheading);
+        line-height: 1.65;
     }
 
     .section_container {
-        @apply px-4 sm:px-6 py-8 sm:py-10 max-w-7xl mx-auto;
+        @apply px-4 sm:px-6 py-10 sm:py-14 max-w-7xl mx-auto;
     }
 
     .card_grid {
-        /* Explicit single column at the smallest sizes, and a 4th column on
-           very wide screens so cards stop stretching past a readable width. */
         @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
-               gap-4 sm:gap-5;
+               gap-5 sm:gap-6;
     }
 
     .card_grid-sm {
-        @apply grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5;
+        @apply grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6;
     }
 
     .no-result {
-        /* Rendered on the page background, where `text-white` was invisible. */
-        @apply text-black-100 text-sm font-normal;
+        @apply text-black-100 text-[15px] font-normal;
     }
 
-    /* filters */
+    /* ---------- filters ---------- */
+
     .filter-bar {
-        @apply mt-6 flex flex-col gap-3;
+        @apply mt-6 flex flex-col gap-4;
     }
 
     .filter-count {
-        @apply text-16-medium !text-black-100;
+        @apply eyebrow !text-black-100;
     }
 
     .filter-group {
-        @apply flex items-center gap-2;
+        @apply flex items-center gap-1 p-1 rounded-full border border-border bg-white;
     }
 
-    /*
-     * Category chips overflow horizontally on small screens rather than
-     * wrapping into a tall stack that pushes the articles off the fold.
-     * `-mx-4 px-4` lets the row bleed to the screen edge so it reads as
-     * scrollable, and the padding keeps focus rings from being clipped.
-     */
+    /* Category chips scroll horizontally rather than wrapping into a tall
+       stack that pushes articles off the fold. */
     .filter-scroller {
         @apply flex items-center gap-2 overflow-x-auto pb-1
                -mx-4 px-4 sm:-mx-1 sm:px-1
@@ -277,163 +270,193 @@
 
     .filter-chip {
         @apply inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap
-               rounded-full border-2 border-border bg-white text-black
-               px-3.5 py-1.5 text-sm font-semibold
-               transition-all duration-150 ease-snap
-               hover:bg-primary-100 hover:-translate-y-[1px]
-               active:translate-y-0;
+               rounded-full border border-border bg-white text-black-100
+               px-3.5 py-1.5 text-[13px] font-medium
+               transition-colors duration-150
+               hover:text-black hover:border-black-400;
+    }
+
+    /* Inside the segmented sort control the chips are borderless. */
+    .filter-group .filter-chip {
+        @apply border-transparent bg-transparent;
     }
 
     .filter-chip--active {
-        /* Ink fill rather than a tint: at a glance you can see which filter is
-           on without relying on a subtle colour difference. */
-        @apply bg-black text-white border-border shadow-100
-               hover:bg-black hover:brightness-110;
+        @apply bg-black text-white border-black font-semibold
+               hover:bg-black hover:text-white hover:border-black;
     }
 
-    /* profile */
+    /* ---------- profile ---------- */
+
     .profile_container {
-        @apply w-full pb-10 pt-14 sm:pt-20 px-4 sm:px-6 max-w-7xl mx-auto lg:flex-row flex-col flex gap-8 lg:gap-10;
+        @apply w-full pb-14 pt-10 sm:pt-14 px-4 sm:px-6 max-w-7xl mx-auto
+               lg:flex-row flex-col flex gap-10 lg:gap-14;
     }
 
     .profile_card {
-        @apply w-full lg:w-80 px-5 sm:px-6 pb-6 pt-20 flex flex-col justify-center items-center
-               bg-primary border-[5px] border-border shadow-100 rounded-[30px] relative z-0 h-fit;
+        /* The skewed black pseudo-element slabs behind the name are gone —
+           they were the single most cluttered element in the old design. */
+        @apply w-full lg:w-72 shrink-0 p-6 flex flex-col items-center text-center
+               bg-white border border-border rounded-2xl shadow-100 h-fit;
     }
 
     .profile_title {
-        @apply w-11/12 bg-white border-[5px] border-border rounded-[20px] px-5 py-3 absolute -top-9 after:absolute after:content-[''] after:-top-1 after:right-0 after:-skew-y-6 after:bg-black after:-z-[1] after:rounded-[20px] after:w-full after:h-[60px] before:absolute before:content-[''] before:-bottom-1 before:left-0  before:-skew-y-6 before:w-full before:h-[60px] before:bg-black  before:-z-[1] before:rounded-[20px] shadow-100;
+        @apply mt-4 mb-1;
     }
 
     .profile_image {
-        @apply rounded-full object-cover border-[3px] border-border;
+        @apply rounded-full object-cover border border-border;
     }
 
-    /* idea details */
+    /* ---------- article ---------- */
+
     .divider {
-        @apply border-t-2 border-dotted border-border bg-transparent max-w-4xl my-8 sm:my-10 mx-auto;
+        @apply border-0 border-t border-border max-w-4xl my-12 mx-auto;
     }
 
     .view_skeleton {
-        @apply bg-zinc-400 h-10 w-24 rounded-lg fixed bottom-3 right-3;
+        @apply bg-muted h-9 w-24 rounded-full fixed bottom-4 right-4;
     }
 
-    /* searchform */
+    /* ---------- search ---------- */
+
     .search-form {
-        /* At 320px the old fixed 80px height / 24px text / 5px border left
-           almost no room for the input between the pill's rounded ends. */
-        @apply max-w-3xl w-full min-h-[56px] sm:min-h-[70px] lg:min-h-[80px]
-               bg-white border-[3px] sm:border-[5px] border-border
-               rounded-full mt-6 sm:mt-8 px-4 sm:px-5
-               flex flex-row items-center gap-3 sm:gap-5
-               text-base sm:text-xl lg:text-[24px];
+        @apply max-w-xl w-full mt-8
+               bg-white border border-border rounded-full
+               px-2 py-2 pl-5
+               flex flex-row items-center gap-3
+               text-[15px] shadow-100
+               transition-shadow duration-200;
+    }
+
+    .search-form:focus-within {
+        @apply shadow-300;
+        border-color: hsl(var(--ring));
     }
 
     .search-input {
-        @apply flex-1 min-w-0 font-bold placeholder:font-semibold placeholder:text-black-100 w-full h-auto outline-none bg-transparent !important;
-    }
-
-    /* Ring the whole pill when the inner input is focused, since the input
-       itself has its outline suppressed. */
-    .search-form:focus-within {
-        box-shadow: 0 0 0 4px hsl(var(--ring) / 0.35);
+        @apply flex-1 min-w-0 font-normal text-black placeholder:text-black-400
+               w-full h-auto outline-none bg-transparent text-[15px] !important;
     }
 
     .search-btn {
-        @apply size-[38px] sm:size-[44px] lg:size-[50px] shrink-0 rounded-full bg-black text-white
-               flex justify-center items-center transition-transform duration-150 ease-snap
-               hover:scale-105 active:scale-95 !important;
+        @apply size-9 shrink-0 rounded-full bg-black text-white
+               flex justify-center items-center
+               transition-opacity duration-150 hover:opacity-85 !important;
     }
 
-    /* news card */
+    /* ---------- news card ---------- */
+
     .news-card {
-        /* Hover now lifts the card into its own shadow rather than swapping to
-           a gold shadow and a different background — a calmer, more modern
-           read that still keeps the offset-shadow personality. */
-        @apply bg-white-100 border-[5px] border-border py-5 sm:py-6 px-4 sm:px-5 rounded-[22px]
-               shadow-200 transition-[transform,box-shadow,border-color] duration-300 ease-snap
-               hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-lift
-               hover:border-secondary focus-within:-translate-x-[3px]
-               focus-within:-translate-y-[3px] focus-within:shadow-lift;
+        @apply flex flex-col overflow-hidden
+               bg-white border border-border rounded-xl
+               transition-[box-shadow,border-color,transform] duration-300 ease-snap
+               hover:shadow-400 hover:border-black-400
+               focus-within:shadow-400 focus-within:border-black-400;
     }
 
-    .news-card_date {
-        @apply font-medium text-sm sm:text-[16px] bg-primary-100 text-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-colors;
-    }
-
-    .news-card_desc {
-        /* `break-all` split words mid-letter ("jour|nalism"). `break-words`
-           only breaks a word when it genuinely cannot fit. */
-        @apply font-normal text-[16px] line-clamp-2 my-3 text-black-100 break-words;
+    .news-card_media {
+        @apply block overflow-hidden bg-muted;
     }
 
     .news-card_img {
-        /* A fixed 164px height letterboxed hard at wide card widths and cropped
-           too aggressively at narrow ones. A ratio holds the same framing at
-           every column count. */
-        @apply w-full aspect-[16/10] rounded-[10px] border border-border object-cover
-               transition-transform duration-500 ease-snap group-hover:scale-[1.03];
+        @apply w-full aspect-[16/10] object-cover
+               transition-transform duration-500 ease-snap
+               group-hover:scale-[1.04];
     }
 
-    /* The image sits inside a rounded card; clip the hover zoom to its corners. */
-    .news-card_img-wrap {
-        @apply overflow-hidden rounded-[10px];
+    .news-card_body {
+        @apply flex flex-1 flex-col p-5;
+    }
+
+    .news-card_meta {
+        @apply flex items-center gap-2 mb-3 text-black-100;
+    }
+
+    .news-card_category {
+        @apply eyebrow text-secondary transition-opacity hover:opacity-75;
+    }
+
+    .news-card_date {
+        @apply eyebrow !font-medium text-black-100;
+    }
+
+    .news-card_title {
+        @apply font-bold text-black text-[19px] leading-snug tracking-tight line-clamp-2
+               transition-colors;
+    }
+
+    .news-card:hover .news-card_title {
+        @apply text-secondary;
+    }
+
+    .news-card_desc {
+        @apply font-normal text-[14.5px] leading-relaxed line-clamp-2 mt-2 text-black-100 break-words;
+    }
+
+    .news-card_footer {
+        @apply flex items-center justify-between gap-3
+               mt-5 pt-4 border-t border-border;
+    }
+
+    .news-card_author {
+        @apply flex items-center gap-2 min-w-0 text-[13px] font-medium text-black
+               transition-opacity hover:opacity-75;
+    }
+
+    .news-card_views {
+        @apply flex items-center gap-1.5 shrink-0 text-[13px] font-medium text-black-100;
     }
 
     .news-card_btn {
-        @apply rounded-full bg-accent border border-border font-medium text-sm sm:text-[16px]
-               text-black px-4 sm:px-5 py-2.5 sm:py-3 shadow-100
-               transition-all duration-150 ease-snap
-               hover:brightness-105 active:translate-x-[2px] active:translate-y-[2px]
-               active:shadow-none !important;
+        @apply inline-flex items-center justify-center gap-2 rounded-lg
+               bg-black text-white border border-black
+               px-4 py-2.5 text-sm font-semibold
+               transition-opacity duration-150 hover:opacity-85 !important;
     }
 
     .news-card_skeleton {
-        @apply w-full h-96 rounded-[22px] bg-muted;
+        @apply w-full h-80 rounded-xl bg-muted;
     }
 
-    /* news form */
+    /* ---------- forms ---------- */
+
     .news-form {
-        @apply max-w-2xl mx-auto my-8 sm:my-10 space-y-6 sm:space-y-8 px-4 sm:px-6;
+        @apply max-w-2xl mx-auto my-12 space-y-7 px-4 sm:px-6;
     }
 
     .news-form_label {
-        /* Was `text-white`, but the form renders on the page background — every
-           label was effectively invisible. */
-        @apply font-bold text-[16px] sm:text-[18px] text-black uppercase tracking-wide;
+        @apply block eyebrow text-black mb-2;
     }
 
     .news-form_input {
-        /* py-7 gave an ~85px tall control on a phone. Note the font-size never
-           drops below 16px: iOS Safari auto-zooms the page on focus below that.
-           Text was a hardcoded grey (#949c9e) that read as permanently
-           disabled — and was unreadable on a dark surface. */
-        @apply border-[3px] border-border bg-white text-black
-               px-4 sm:px-5 py-5 sm:py-7 text-[16px] sm:text-[18px]
-               font-semibold rounded-full mt-3 placeholder:text-black-400
-               transition-shadow focus-visible:ring-4 focus-visible:ring-ring/35 !important;
+        /* Font size stays at 16px: iOS Safari auto-zooms the page when an
+           input smaller than that receives focus. */
+        @apply w-full border border-input bg-white text-black
+               px-4 py-3 text-[16px] font-normal rounded-lg
+               placeholder:text-black-400
+               transition-shadow focus-visible:ring-2 focus-visible:ring-ring/40 !important;
     }
 
     .news-form_textarea {
-        @apply border-[3px] border-border bg-white text-black p-4 sm:p-5
-               text-[16px] sm:text-[18px] font-semibold rounded-[20px] mt-3
-               placeholder:text-black-400 transition-shadow
-               focus-visible:ring-4 focus-visible:ring-ring/35 !important;
+        @apply w-full border border-input bg-white text-black
+               px-4 py-3 text-[16px] font-normal rounded-lg min-h-[120px]
+               placeholder:text-black-400
+               transition-shadow focus-visible:ring-2 focus-visible:ring-ring/40 !important;
     }
 
-    /* Radix injects its own inline-ish styling here, so these stay as explicit
-       declarations — but the colours are variables now, not frozen hex. */
+    /* Radix sets its own styles on the trigger, so these stay explicit —
+       but the values are tokens, not frozen hex. */
     .news-form_select-trigger {
         display: flex !important;
         width: 100% !important;
         height: auto !important;
-        border: 3px solid hsl(var(--border)) !important;
-        padding: 1rem 1.25rem !important;
+        border: 1px solid hsl(var(--input)) !important;
+        padding: 0.75rem 1rem !important;
         font-size: 16px !important;
         color: hsl(var(--ink)) !important;
-        font-weight: 600 !important;
-        border-radius: 9999px !important;
-        margin-top: 0.75rem !important;
+        font-weight: 400 !important;
+        border-radius: var(--radius) !important;
         background-color: hsl(var(--surface)) !important;
         cursor: pointer !important;
         box-shadow: none !important;
@@ -442,7 +465,7 @@
     .news-form_select-trigger:focus,
     .news-form_select-trigger:focus-visible {
         outline: none !important;
-        box-shadow: 0 0 0 4px hsl(var(--ring) / 0.35) !important;
+        box-shadow: 0 0 0 2px hsl(var(--ring) / 0.4) !important;
     }
 
     .news-form_select-trigger > span {
@@ -459,26 +482,29 @@
     .news-form_file {
         display: block !important;
         width: 100% !important;
-        border: 3px solid hsl(var(--border)) !important;
-        padding: 0.75rem 1rem !important;
-        font-size: 16px !important;
+        border: 1px dashed hsl(var(--input)) !important;
+        padding: 1rem !important;
+        font-size: 14px !important;
         color: hsl(var(--ink-100)) !important;
-        font-weight: 600 !important;
-        border-radius: 9999px !important;
-        margin-top: 0.75rem !important;
+        border-radius: var(--radius) !important;
         background-color: hsl(var(--surface)) !important;
         cursor: pointer !important;
+        transition: border-color 0.15s ease;
+    }
+
+    .news-form_file:hover {
+        border-color: hsl(var(--ring)) !important;
     }
 
     .news-form_file::file-selector-button {
-        margin-right: 0.75rem;
-        padding: 0.5rem 1rem;
-        border-radius: 9999px;
-        border: 2px solid hsl(var(--border));
-        background-color: hsl(var(--secondary));
-        color: hsl(var(--hero-fg));
-        font-weight: 700;
-        font-size: 14px;
+        margin-right: 0.875rem;
+        padding: 0.5rem 0.875rem;
+        border-radius: calc(var(--radius) - 4px);
+        border: 1px solid hsl(var(--border));
+        background-color: hsl(var(--primary-100));
+        color: hsl(var(--ink));
+        font-weight: 600;
+        font-size: 13px;
         cursor: pointer;
         transition: background-color 0.15s ease;
     }
@@ -489,8 +515,8 @@
 
     .news-form_image-preview {
         margin-top: 1rem;
-        border-radius: 20px;
-        border: 3px solid hsl(var(--border));
+        border-radius: var(--radius);
+        border: 1px solid hsl(var(--border));
         overflow: hidden;
         width: 100%;
         max-height: 16rem;
@@ -499,60 +525,37 @@
     }
 
     .news-form_error {
-        @apply text-destructive font-medium mt-2 ml-4 sm:ml-5 text-sm sm:text-base;
+        @apply text-destructive font-medium mt-2 text-[13px];
     }
 
     .news-form_btn {
-        /* Was `bg-primary` (cream) with the caller forcing `!text-white-100`
-           (also cream) — the label was invisible. Now a solid ink CTA that
-           presses into its own shadow. */
-        @apply bg-black text-white border-[4px] border-border rounded-full
-               p-4 sm:p-5 min-h-[60px] sm:min-h-[70px] w-full
-               font-bold text-[16px] sm:text-[18px] shadow-100
-               transition-all duration-150 ease-snap
-               hover:brightness-110 active:translate-x-[2px] active:translate-y-[2px]
-               active:shadow-none disabled:opacity-60 disabled:cursor-not-allowed !important;
+        @apply inline-flex items-center justify-center gap-2
+               bg-black text-white border border-black rounded-lg
+               px-5 py-3.5 w-full font-semibold text-[15px]
+               transition-opacity duration-150
+               hover:opacity-85
+               disabled:opacity-50 disabled:cursor-not-allowed !important;
     }
 
-    /* view */
+    /* ---------- view counter ---------- */
+
     .view-container {
-        @apply flex justify-end items-center mt-5 fixed bottom-3 right-3 z-10;
+        @apply flex justify-end items-center fixed bottom-4 right-4 z-10;
     }
 
     .view-text {
-        @apply font-medium text-sm sm:text-[16px] bg-accent text-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg capitalize border border-border shadow-100;
-    }
-
-    .category-tag {
-        @apply font-medium text-sm sm:text-[16px] bg-accent text-black px-3 sm:px-4 py-1.5 sm:py-2 border border-border rounded-full;
-    }
-
-    .pattern {
-        /* The stripe was a fixed yellow that only worked on the light hero.
-           Tying it to the ink colour keeps it legible in both themes and much
-           subtler overall. */
-        background-image: linear-gradient(
-                to right,
-                transparent 49.5%,
-                hsl(var(--hero-fg) / 0.06) 49.5%,
-                hsl(var(--hero-fg) / 0.16) 50.5%,
-                transparent 50.5%
-        );
-        background-size: 5% 100%;
-        background-position: center;
-        background-repeat: repeat-x;
-    }
-
-    .tag-tri {
-        @apply before:content-[''] before:absolute before:top-2 before:left-2 before:border-t-[10px] before:border-t-black before:border-r-[10px] before:border-r-transparent after:content-[''] after:absolute after:bottom-2 after:right-2 after:border-b-[10px] after:border-b-black after:border-l-[10px] after:border-l-transparent;
+        @apply text-[13px] font-medium bg-white text-black-100
+               px-3 py-1.5 rounded-full border border-border shadow-200;
     }
 }
 
 .w-md-editor-toolbar {
-    padding: 10px !important;
+    padding: 8px !important;
 }
 
 /* The markdown editor is a fixed-width island on small screens otherwise. */
 .w-md-editor {
     max-width: 100%;
+    border-radius: var(--radius) !important;
+    border: 1px solid hsl(var(--input)) !important;
 }

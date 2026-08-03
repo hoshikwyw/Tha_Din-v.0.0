@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
  */
 export default function NotFound() {
   return (
-    <section className="pink_container !min-h-[60vh]">
+    <section className="pink_container">
       <p className="tag">404</p>
       <h1 className="heading">This page doesn&apos;t exist</h1>
       <p className="sub-heading !max-w-xl">

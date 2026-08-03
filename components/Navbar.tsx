@@ -26,8 +26,8 @@ const Navbar = async () => {
     // Sticky so navigation and the theme toggle stay reachable while reading a
     // long article. The translucent surface + blur keeps it from feeling heavy.
     <header className="sticky top-0 z-50 px-4 sm:px-5 py-3 font-work-sans
-                       bg-white/85 supports-[backdrop-filter]:backdrop-blur-md
-                       border-b-2 border-border">
+                       bg-white/80 supports-[backdrop-filter]:backdrop-blur-md
+                       border-b border-border">
       <nav className="max-w-7xl mx-auto flex justify-between items-center gap-3">
         <Link href="/" className="shrink-0 group">
           <h1 className="text-xl sm:text-2xl font-bold text-black transition-colors group-hover:text-secondary">
@@ -81,7 +81,7 @@ const Navbar = async () => {
               </form>
 
               <Link href={`/user/${session.id}`} aria-label="Your profile" className="shrink-0">
-                <Avatar className="size-9 sm:size-10 border-2 border-border transition-transform duration-150 ease-snap hover:scale-105">
+                <Avatar className="size-9 sm:size-10 border border-border transition-transform duration-150 ease-snap hover:scale-105">
                   {/* Empty alt: the link already has an accessible name, so
                       repeating it here would double-announce. */}
                   <AvatarImage src={session.user.image || ''} alt="" />

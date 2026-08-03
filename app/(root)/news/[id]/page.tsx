@@ -83,7 +83,8 @@ const NewsDetailPage = async ({
 
   const suggestPosts = playlist?.select ?? [];
   const parsedContent = sanitizeHtml(md.render(post?.pitch || ""));
-  const thumbnail = resolveImageUrl(post.image, { width: 600, height: 600 });
+  // 16:9 to match how it renders — the old 600x600 square was being letterboxed.
+  const thumbnail = resolveImageUrl(post.image, { width: 1200, height: 675 });
 
   // NewsArticle structured data — what makes an article eligible for Google
   // News and rich results. `dateModified` reuses `_createdAt` because the
@@ -130,69 +131,70 @@ const NewsDetailPage = async ({
           __html: JSON.stringify(articleJsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <section className="pink_container !min-h-[230px]">
-        <p className="tag">{formatDate(post?._createdAt)}</p>
+      <section className="pink_container">
+        {resolveCategoryTitle(post.category) &&
+          (resolveCategorySlug(post.category) ? (
+            <Link
+              href={`/?category=${encodeURIComponent(resolveCategorySlug(post.category)!)}`}
+              className="tag hover:opacity-75 transition-opacity"
+            >
+              {resolveCategoryTitle(post.category)}
+            </Link>
+          ) : (
+            <p className="tag">{resolveCategoryTitle(post.category)}</p>
+          ))}
         <h1 className="heading">{post.title}</h1>
-        <p className="sub-heading !max-w-5xl">{post.description}</p>
+        <p className="sub-heading">{post.description}</p>
+
+        {/* Byline moved into the header, where a reader looks for it. */}
+        <div className="mt-8 flex items-center gap-3">
+          <Link
+            href={`/user/${post.author?._id}`}
+            className="flex gap-2.5 items-center min-w-0 transition-opacity hover:opacity-75"
+          >
+            <ImageWithFallback
+              src={post.author?.image}
+              alt=""
+              width={36}
+              height={36}
+              className="rounded-full border border-border shrink-0"
+            />
+            <span className="text-[15px] font-semibold text-black truncate">
+              {post.author?.name}
+            </span>
+          </Link>
+          <span className="text-black-100" aria-hidden="true">
+            &middot;
+          </span>
+          <time dateTime={post._createdAt} className="text-[15px] text-black-100">
+            {formatDate(post?._createdAt)}
+          </time>
+        </div>
       </section>
 
       <section className="section_container">
         {thumbnail && (
-          <div className="w-full flex justify-center">
+          <div className="max-w-4xl mx-auto overflow-hidden rounded-xl border border-border bg-muted">
             <ImageWithFallback
               src={thumbnail}
               alt={post.title ?? "News thumbnail"}
-              width={300}
-              height={300}
-              className="rounded-xl"
+              width={1200}
+              height={675}
+              className="w-full aspect-[16/9] object-cover"
+              sizes="(max-width: 896px) 100vw, 896px"
+              priority
             />
           </div>
         )}
 
-        <div className="space-y-5 mt-8 sm:mt-10 max-w-4xl mx-auto">
-          {/* Stacks on phones: side-by-side, the author block and the category
-              pill were crushing each other at narrow widths. */}
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-            <Link
-              href={`/user/${post.author?._id}`}
-              className="flex gap-2 items-center min-w-0"
-            >
-              <ImageWithFallback
-                src={post.author?.image}
-                alt={post.author?.name ?? "profile"}
-                width={64}
-                height={64}
-                className="border border-border rounded-full drop-shadow-lg shrink-0"
-              />
-              <div className="min-w-0">
-                <p className="text-20-medium truncate">{post.author?.name}</p>
-                <p className="text-16-medium !text-secondary truncate">
-                  @{post.author?.username}
-                </p>
-              </div>
-            </Link>
-
-            {resolveCategoryTitle(post.category) && (
-              <div className="flex gap-1.5 shrink-0">
-                {resolveCategorySlug(post.category) ? (
-                  <Link
-                    href={`/?category=${encodeURIComponent(resolveCategorySlug(post.category)!)}`}
-                    className="category-tag transition-colors hover:brightness-105"
-                  >
-                    {resolveCategoryTitle(post.category)}
-                  </Link>
-                ) : (
-                  <p className="category-tag">
-                    {resolveCategoryTitle(post.category)}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-
+        <div className="mt-10 max-w-2xl mx-auto">
           {parsedContent ? (
             <article
-              className="prose dark:prose-invert max-w-4xl font-work-sans break-words prose-headings:text-black prose-a:text-secondary !text-black"
+              className="prose prose-lg dark:prose-invert font-work-sans break-words
+                         prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-black
+                         prose-a:text-secondary prose-a:font-medium
+                         prose-img:rounded-lg prose-img:border prose-img:border-border
+                         !text-black-100 prose-strong:text-black"
               dangerouslySetInnerHTML={{ __html: parsedContent }}
             />
           ) : (
@@ -203,8 +205,8 @@ const NewsDetailPage = async ({
         <hr className="divider" />
 
         {suggestPosts.length > 0 && (
-          <div className="max-w-4xl mx-auto">
-            <p className="text-30-semibold">Suggest Posts for you</p>
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-26-semibold">More stories</h2>
             <ul className="mt-7 card_grid-sm">
               {suggestPosts.map((suggested: NewsCardType) => (
                 <NewsCard key={suggested._id} post={suggested} />

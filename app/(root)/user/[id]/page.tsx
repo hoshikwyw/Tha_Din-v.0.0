@@ -48,28 +48,30 @@ const UserProfilePage = async ({params}: {params: Promise<{id: string}>}) => {
   return (
     <>
       <section className="profile_container">
+        {/* Image leads now. The name used to sit in a slab pinned above the
+            card with skewed black pseudo-elements behind it. */}
         <div className="profile_card">
+          <ImageWithFallback
+            src={user?.image}
+            alt=""
+            width={96}
+            height={96}
+            className="profile_image size-24"
+          />
+
           <div className="profile_title">
-            <h3 className="text-24-black uppercase text-center line-clamp-1">
-              {user.name}
-            </h3>
+            <h1 className="text-24-black line-clamp-2">{user.name}</h1>
           </div>
 
-          <ImageWithFallback src={user?.image} alt={user?.name ?? "profile"} width={220} height={220} className='profile_image' />
+          <p className="eyebrow text-black-100">@{user?.username}</p>
 
-          <p className="text-30-extrabold mt-7 text-center">
-            @{user?.username}
-          </p>
-
-          <p className=" mt-1 text-center text-14-normal">
-            {user?.bio}
-          </p>
+          {user?.bio && <p className="mt-4 text-14-normal">{user.bio}</p>}
         </div>
 
-        <div className="flex-1 flex flex-col gap-5 lg:-mt-5">
-          <p className="text-30-bold">
-            {session?.id === id ? "Your": "All"} News
-          </p>
+        <div className="flex-1 flex flex-col gap-6 min-w-0">
+          <h2 className="text-30-bold">
+            {session?.id === id ? "Your" : "All"} News
+          </h2>
           <ul className="card_grid-sm">
             <Suspense fallback={<NewsCardSkeleton />}>
               <UserNews id={id} />

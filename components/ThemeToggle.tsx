@@ -50,7 +50,7 @@ const ThemeToggle = () => {
   };
 
   const baseClass =
-    "grid place-items-center size-9 sm:size-10 shrink-0 rounded-full border-2 border-border bg-white text-black transition-transform duration-150 ease-snap hover:scale-105 active:scale-95";
+    "grid place-items-center size-9 shrink-0 rounded-full border border-border bg-white text-black-100 transition-colors duration-150 hover:text-black hover:border-black-400";
 
   // Reserve the exact footprint pre-mount so the navbar does not shift.
   if (!theme) {

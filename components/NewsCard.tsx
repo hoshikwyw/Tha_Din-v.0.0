@@ -3,7 +3,6 @@ import { EyeIcon } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
 import Link from "next/link";
 import React from "react";
-import { Button } from "./ui/button";
 import { Author, Category, News } from "@/sanity/types";
 import { Skeleton } from "./ui/skeleton";
 import {
@@ -17,82 +16,81 @@ export type NewsCardType = Omit<News, "author" | "category"> & {
   category?: Pick<Category, "_id" | "title" | "slug"> | null;
 };
 
+/**
+ * Editorial card: image, meta line, headline, excerpt, then a hairline footer
+ * with author and views.
+ *
+ * The previous layout led with a date pill and the author's name above the
+ * headline, and closed with a "Details" button duplicating links the card
+ * already had. Leading with the image and headline is both the conventional
+ * reading order for news and a much calmer composition.
+ */
 const NewsCard = ({ post }: { post: NewsCardType }) => {
   const { _createdAt, views, author, title, category, _id, image, description } =
     post;
 
   const categoryTitle = resolveCategoryTitle(category);
   const categorySlug = resolveCategorySlug(category);
+  const href = `/news/${_id}`;
 
   return (
     <li className="news-card group">
-      <div className="flex-between">
-        <p className="news-card_date">{formatDate(_createdAt)}</p>
-
-        <div className="flex gap-1.5">
-          <EyeIcon className="size-6 text-black" />
-          <span className="text-16-medium">{views ?? 0}</span>
-        </div>
-      </div>
-
-      <div className="flex-between mt-5 gap-5">
-        <div className="flex-1">
-          <Link href={`/user/${author?._id}`}>
-            <p className="text-16-medium line-clamp-1">{author?.name}</p>
-          </Link>
-          <Link href={`/news/${_id}`}>
-            <h3 className="text-26-semibold line-clamp-1">{title}</h3>
-          </Link>
-        </div>
-        <Link href={`/user/${author?._id}`}>
-          <ImageWithFallback
-            src={author?.image}
-            alt={author?.name ?? "author"}
-            width={48}
-            height={48}
-            className="rounded-full border border-border"
-          />
-        </Link>
-      </div>
-
-      <Link href={`/news/${_id}`}>
-        <p className="news-card_desc">{description}</p>
-        {/* Wrapper clips the hover zoom to the image's rounded corners. */}
-        <div className="news-card_img-wrap">
-          <ImageWithFallback
-            src={resolveImageUrl(image, { width: 500, height: 500 })}
-            alt={title ?? "News thumbnail"}
-            className="news-card_img"
-            width={500}
-            height={500}
-            // This thumbnail is fluid (`w-full`) inside a 1/2/3-column grid.
-            // Without `sizes` the browser assumes 100vw and pulls the largest
-            // srcset candidate — on a phone that is several times the pixels
-            // actually needed.
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-          />
-        </div>
+      <Link href={href} className="news-card_media" tabIndex={-1} aria-hidden="true">
+        <ImageWithFallback
+          src={resolveImageUrl(image, { width: 800, height: 500 })}
+          alt=""
+          className="news-card_img"
+          width={800}
+          height={500}
+          // Fluid inside a 1/2/3/4-column grid. Without `sizes` the browser
+          // assumes 100vw and pulls the largest srcset candidate.
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+        />
       </Link>
 
-      <div className="flex-between gap-3 mt-5">
-        {/* Was `/?query=<title>`, a plain text search that also matched titles
-            and descriptions. It now uses the real category filter — and falls
-            back to an unlinked label for legacy docs that have no slug. */}
-        {categorySlug ? (
-          <Link
-            href={`/?category=${encodeURIComponent(categorySlug)}`}
-            className="min-w-0"
-          >
-            <p className="text-16-medium truncate transition-colors hover:text-secondary">
-              {categoryTitle}
-            </p>
+      <div className="news-card_body">
+        <div className="news-card_meta">
+          {categoryTitle &&
+            (categorySlug ? (
+              <Link
+                href={`/?category=${encodeURIComponent(categorySlug)}`}
+                className="news-card_category"
+              >
+                {categoryTitle}
+              </Link>
+            ) : (
+              <span className="news-card_category">{categoryTitle}</span>
+            ))}
+          {categoryTitle && <span aria-hidden="true">&middot;</span>}
+          <time dateTime={_createdAt} className="news-card_date">
+            {formatDate(_createdAt)}
+          </time>
+        </div>
+
+        <h3 className="news-card_title">
+          <Link href={href}>{title}</Link>
+        </h3>
+
+        {description && <p className="news-card_desc">{description}</p>}
+
+        <div className="news-card_footer">
+          <Link href={`/user/${author?._id}`} className="news-card_author">
+            <ImageWithFallback
+              src={author?.image}
+              alt=""
+              width={24}
+              height={24}
+              className="rounded-full border border-border shrink-0"
+            />
+            <span className="truncate">{author?.name}</span>
           </Link>
-        ) : (
-          <p className="text-16-medium truncate min-w-0">{categoryTitle}</p>
-        )}
-        <Button className="news-card_btn" asChild>
-          <Link href={`/news/${_id}`}>Details</Link>
-        </Button>
+
+          <span className="news-card_views">
+            <EyeIcon className="size-4" aria-hidden="true" />
+            {views ?? 0}
+            <span className="sr-only"> views</span>
+          </span>
+        </div>
       </div>
     </li>
   );

@@ -21,7 +21,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <section className="pink_container !min-h-[60vh]">
+    <section className="pink_container">
       <h1 className="heading">Something went wrong</h1>
       <p className="sub-heading !max-w-xl">
         We couldn&apos;t load this page. This is usually temporary — please try
