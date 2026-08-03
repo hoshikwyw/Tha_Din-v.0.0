@@ -5,6 +5,7 @@ import Link from 'next/link'
 import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import SignInButton from './SignInButton'
+import ThemeToggle from './ThemeToggle'
 
 /**
  * Small screens get icon-only controls, `sm` and up get text labels.
@@ -22,27 +23,43 @@ const Navbar = async () => {
   const { session, isAdmin } = await getSessionWithRole()
 
   return (
-    <header className="px-4 sm:px-5 py-3 bg-white shadow-sm font-work-sans">
+    // Sticky so navigation and the theme toggle stay reachable while reading a
+    // long article. The translucent surface + blur keeps it from feeling heavy.
+    <header className="sticky top-0 z-50 px-4 sm:px-5 py-3 font-work-sans
+                       bg-white/85 supports-[backdrop-filter]:backdrop-blur-md
+                       border-b-2 border-border">
       <nav className="max-w-7xl mx-auto flex justify-between items-center gap-3">
-        <Link href="/" className="shrink-0">
-          <h1 className="text-xl sm:text-2xl font-bold text-blue-950">Tha Din</h1>
+        <Link href="/" className="shrink-0 group">
+          <h1 className="text-xl sm:text-2xl font-bold text-black transition-colors group-hover:text-secondary">
+            Tha Din
+          </h1>
         </Link>
 
-        <div className="flex items-center gap-4 sm:gap-5 text-black">
+        <div className="flex items-center gap-3 sm:gap-5 text-black">
+          <ThemeToggle />
+
           {session?.user ? (
             <>
               {isAdmin && (
                 <>
-                  <Link href="/news/create" aria-label="Create news">
-                    <span className="hidden sm:inline">Create</span>
-                    <BadgePlus className="size-6 text-red-500 sm:hidden" />
+                  <Link
+                    href="/news/create"
+                    aria-label="Create news"
+                    className="transition-colors hover:text-secondary"
+                  >
+                    <span className="hidden sm:inline font-medium">Create</span>
+                    <BadgePlus className="size-6 sm:hidden" />
                   </Link>
 
                   {/* Reachable from the nav now — /categories previously had no
                       link anywhere and could only be found by typing the URL. */}
-                  <Link href="/categories" aria-label="Manage categories">
-                    <span className="hidden sm:inline">Categories</span>
-                    <LayoutList className="size-6 text-red-500 sm:hidden" />
+                  <Link
+                    href="/categories"
+                    aria-label="Manage categories"
+                    className="transition-colors hover:text-secondary"
+                  >
+                    <span className="hidden sm:inline font-medium">Categories</span>
+                    <LayoutList className="size-6 sm:hidden" />
                   </Link>
                 </>
               )}
@@ -53,18 +70,22 @@ const Navbar = async () => {
                   await signOut({ redirectTo: '/' })
                 }}
               >
-                <button type="submit" aria-label="Log out" className="flex items-center">
-                  <span className="hidden sm:inline">Logout</span>
-                  <LogOut className="size-6 text-red-500 sm:hidden" />
+                <button
+                  type="submit"
+                  aria-label="Log out"
+                  className="flex items-center transition-colors hover:text-destructive"
+                >
+                  <span className="hidden sm:inline font-medium">Logout</span>
+                  <LogOut className="size-6 sm:hidden" />
                 </button>
               </form>
 
-              <Link href={`/user/${session.id}`} aria-label="Your profile">
-                <Avatar className="size-9 sm:size-10">
+              <Link href={`/user/${session.id}`} aria-label="Your profile" className="shrink-0">
+                <Avatar className="size-9 sm:size-10 border-2 border-border transition-transform duration-150 ease-snap hover:scale-105">
                   {/* Empty alt: the link already has an accessible name, so
                       repeating it here would double-announce. */}
                   <AvatarImage src={session.user.image || ''} alt="" />
-                  <AvatarFallback>
+                  <AvatarFallback className="bg-accent text-black font-bold">
                     {session.user.name?.trim()?.charAt(0)?.toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>

@@ -63,13 +63,41 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Runs before the browser paints anything, so a visitor who prefers dark mode
+ * never sees a flash of the light theme. It has to be inline and synchronous —
+ * a deferred script or a `useEffect` would both run after first paint.
+ *
+ * Kept in sync with components/ThemeToggle.tsx.
+ */
+const THEME_BOOT_SCRIPT = `
+(function(){
+  try {
+    var stored = localStorage.getItem('theme');
+    var theme = stored === 'light' || stored === 'dark'
+      ? stored
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (theme === 'dark') document.documentElement.classList.add('dark');
+    document.documentElement.style.colorScheme = theme;
+  } catch (e) {
+    /* storage blocked — fall through to the light default */
+  }
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: the boot script above mutates <html> before
+    // React hydrates, so the class and style attributes intentionally differ
+    // from the server output.
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+      </head>
       <body className={workSans.variable} suppressHydrationWarning>
         {children}
         {/*

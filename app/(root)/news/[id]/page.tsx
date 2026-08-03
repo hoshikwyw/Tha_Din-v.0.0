@@ -158,7 +158,7 @@ const NewsDetailPage = async ({
                 alt={post.author?.name ?? "profile"}
                 width={64}
                 height={64}
-                className="border border-black rounded-full drop-shadow-lg shrink-0"
+                className="border border-border rounded-full drop-shadow-lg shrink-0"
               />
               <div className="min-w-0">
                 <p className="text-20-medium truncate">{post.author?.name}</p>
@@ -179,7 +179,7 @@ const NewsDetailPage = async ({
 
           {parsedContent ? (
             <article
-              className="prose max-w-4xl font-work-sans break-words !text-black"
+              className="prose dark:prose-invert max-w-4xl font-work-sans break-words prose-headings:text-black prose-a:text-secondary !text-black"
               dangerouslySetInnerHTML={{ __html: parsedContent }}
             />
           ) : (

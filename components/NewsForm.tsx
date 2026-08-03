@@ -31,6 +31,20 @@ const NewsForm = ({ categories }: { categories: CategoryOption[] }) => {
     const { toast } = useToast()
     const router = useRouter()
 
+    // The editor was pinned to `data-color-mode="dark"`, so it rendered as a
+    // dark island in the middle of the light form. Track the document theme
+    // instead — MutationObserver catches the toggle flipping the class.
+    const [colorMode, setColorMode] = useState<'light' | 'dark'>('light')
+    useEffect(() => {
+        const root = document.documentElement
+        const sync = () =>
+            setColorMode(root.classList.contains('dark') ? 'dark' : 'light')
+        sync()
+        const observer = new MutationObserver(sync)
+        observer.observe(root, { attributes: true, attributeFilter: ['class'] })
+        return () => observer.disconnect()
+    }, [])
+
     // Object URLs stay allocated until explicitly revoked; without this the
     // previous preview leaks every time a different file is chosen.
     useEffect(() => {
@@ -68,7 +82,7 @@ const NewsForm = ({ categories }: { categories: CategoryOption[] }) => {
                 toast({
                     title: "Success",
                     description: "Your news has been published",
-                    className: "bg-green-500",
+                    className: "bg-success text-success-foreground border-border",
                 })
                 router.push(`/news/${result._id}`)
             } else {
@@ -79,7 +93,7 @@ const NewsForm = ({ categories }: { categories: CategoryOption[] }) => {
                     title: "Error",
                     description: result.error || "Could not publish this news item",
                     variant: "destructive",
-                    className: "bg-red-500",
+                    className: "bg-destructive text-destructive-foreground border-border",
                 })
             }
 
@@ -94,7 +108,7 @@ const NewsForm = ({ categories }: { categories: CategoryOption[] }) => {
                     title: "Error",
                     description: "Please check your inputs and try again",
                     variant: "destructive",
-                    className: "bg-red-500",
+                    className: "bg-destructive text-destructive-foreground border-border",
                 })
 
                 return { ...prevState, error: "Validation failed", status: "ERROR" }
@@ -104,7 +118,7 @@ const NewsForm = ({ categories }: { categories: CategoryOption[] }) => {
                 title: "Error",
                 description: "An unexpected error occurred",
                 variant: "destructive",
-                className: "bg-red-500",
+                className: "bg-destructive text-destructive-foreground border-border",
             })
 
             return {
@@ -202,7 +216,7 @@ const NewsForm = ({ categories }: { categories: CategoryOption[] }) => {
             </div>
 
             {/* NEWS BODY INPUT AREA — the Sanity field is still named `pitch` */}
-            <div data-color-mode="dark">
+            <div data-color-mode={colorMode}>
                 <label htmlFor="pitch" className='news-form_label'>
                     Details
                 </label>
@@ -224,7 +238,7 @@ const NewsForm = ({ categories }: { categories: CategoryOption[] }) => {
             </div>
 
             {/* FORM SUBMIT BUTTON  */}
-            <Button type='submit' className='news-form_btn !text-white-100' disabled={isPending}>
+            <Button type='submit' className='news-form_btn' disabled={isPending}>
                 {isPending ? "Submitting..." : "Submit your news"}
                 <Send className='size-6 ml-2' />
             </Button>

@@ -44,7 +44,7 @@ const CategoriesPage = async () => {
                 {categories.map((c: { _id: string; title: string | null; description?: string | null }) => (
                   <li
                     key={c._id}
-                    className="rounded-xl border border-black p-4 bg-white"
+                    className="rounded-xl border border-border p-4 bg-white"
                   >
                     <p className="text-20-medium">{c.title}</p>
                     {c.description && (

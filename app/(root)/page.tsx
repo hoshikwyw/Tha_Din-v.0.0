@@ -61,7 +61,7 @@ export default async function Home({
       </section>
 
       <section className="section_container">
-        <p className="text-30-semibold text-white">
+        <p className="text-30-semibold">
           {query ? `Search result for "${query}"` : "All news"}
         </p>
         {/* The empty state lives outside the <ul>: a bare <p> is not valid as a

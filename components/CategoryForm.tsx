@@ -36,7 +36,7 @@ const CategoryForm = () => {
         toast({
           title: "Success",
           description: "Category created",
-          className: "bg-green-500",
+          className: "bg-success text-success-foreground border-border",
         });
         setErrors({});
         router.refresh();
@@ -45,7 +45,7 @@ const CategoryForm = () => {
           title: "Error",
           description: result.error || "Failed to create category",
           variant: "destructive",
-          className: "bg-red-500",
+          className: "bg-destructive text-destructive-foreground border-border",
         });
       }
 
@@ -58,7 +58,7 @@ const CategoryForm = () => {
           title: "Error",
           description: "Please check your inputs",
           variant: "destructive",
-          className: "bg-red-500",
+          className: "bg-destructive text-destructive-foreground border-border",
         });
         return { ...prevState, error: "Validation failed", status: "ERROR" };
       }
@@ -66,7 +66,7 @@ const CategoryForm = () => {
         title: "Error",
         description: "An unexpected error occurred",
         variant: "destructive",
-        className: "bg-red-500",
+        className: "bg-destructive text-destructive-foreground border-border",
       });
       return {
         ...prevState,
@@ -113,7 +113,7 @@ const CategoryForm = () => {
       </div>
       <Button
         type="submit"
-        className="news-form_btn !text-white-100"
+        className="news-form_btn"
         disabled={isPending}
       >
         {isPending ? "Saving..." : "Add category"}

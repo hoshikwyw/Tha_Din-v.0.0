@@ -45,30 +45,38 @@ const NewsCard = ({ post }: { post: NewsCardType }) => {
             alt={author?.name ?? "author"}
             width={48}
             height={48}
-            className="rounded-full border border-black"
+            className="rounded-full border border-border"
           />
         </Link>
       </div>
 
       <Link href={`/news/${_id}`}>
         <p className="news-card_desc">{description}</p>
-        <ImageWithFallback
-          src={resolveImageUrl(image, { width: 500, height: 500 })}
-          alt={title ?? "News thumbnail"}
-          className="news-card_img"
-          width={500}
-          height={500}
-          // This thumbnail is fluid (`w-full`) inside a 1/2/3-column grid.
-          // Without `sizes` the browser assumes 100vw and pulls the largest
-          // srcset candidate — on a phone that is several times the pixels
-          // actually needed.
-          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-        />
+        {/* Wrapper clips the hover zoom to the image's rounded corners. */}
+        <div className="news-card_img-wrap">
+          <ImageWithFallback
+            src={resolveImageUrl(image, { width: 500, height: 500 })}
+            alt={title ?? "News thumbnail"}
+            className="news-card_img"
+            width={500}
+            height={500}
+            // This thumbnail is fluid (`w-full`) inside a 1/2/3-column grid.
+            // Without `sizes` the browser assumes 100vw and pulls the largest
+            // srcset candidate — on a phone that is several times the pixels
+            // actually needed.
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+          />
+        </div>
       </Link>
 
       <div className="flex-between gap-3 mt-5">
-        <Link href={`/?query=${categoryTitle?.toLowerCase() ?? ""}`}>
-          <p className="text-16-medium">{categoryTitle}</p>
+        <Link
+          href={`/?query=${categoryTitle?.toLowerCase() ?? ""}`}
+          className="min-w-0"
+        >
+          <p className="text-16-medium truncate transition-colors hover:text-secondary">
+            {categoryTitle}
+          </p>
         </Link>
         <Button className="news-card_btn" asChild>
           <Link href={`/news/${_id}`}>Details</Link>

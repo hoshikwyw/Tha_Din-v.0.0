@@ -23,6 +23,98 @@
         --fs-20: clamp(1.0625rem, 1rem + 0.3125vw, 1.25rem);        /* 17 -> 20 */
         --fs-heading: clamp(1.75rem, 1.2083rem + 2.7083vw, 3.375rem); /* 28 -> 54 */
         --fs-subheading: clamp(1rem, 0.9167rem + 0.4167vw, 1.25rem);  /* 16 -> 20 */
+
+        /*
+         * LIGHT THEME — HSL channel triplets consumed by tailwind.config.ts.
+         * Hues match the original brand palette, so light mode keeps its
+         * identity; only contrast problems were corrected.
+         */
+        --background: 39 68% 88%;      /* cream page  #F5E6CA */
+        --foreground: 211 28% 25%;     /* navy ink    #2D3E50 */
+
+        --primary: 39 68% 88%;
+        --primary-100: 39 30% 92%;
+        --secondary: 23 72% 68%;       /* warm orange #E89F71 */
+        --accent: 344 41% 75%;         /* dusty rose  #D9A5B3 */
+
+        --ink: 211 28% 25%;
+        /* Was #A8A8A8 (66% lightness) for body copy — only ~2.3:1 on the card
+           surface, below the 4.5:1 minimum. Darkened to pass. */
+        --ink-100: 211 14% 40%;
+        --ink-200: 211 14% 40%;
+        --ink-300: 211 28% 25%;
+        --ink-400: 211 14% 46%;
+
+        --surface: 36 100% 97%;        /* card        #FFF9F0 */
+        --surface-100: 36 100% 97%;
+
+        --border: 211 28% 25%;
+        --input: 211 28% 25%;
+        --ring: 23 72% 48%;
+
+        --card: 36 100% 97%;
+        --card-foreground: 211 28% 25%;
+        --popover: 36 100% 97%;
+        --popover-foreground: 211 28% 25%;
+        --muted: 39 35% 92%;
+        --muted-foreground: 211 14% 40%;
+        --destructive: 0 70% 45%;
+        --destructive-foreground: 0 0% 100%;
+        --success: 142 60% 30%;
+        --success-foreground: 0 0% 100%;
+
+        /* Text sitting on the orange hero. Near-white failed contrast there. */
+        --hero-fg: 211 34% 18%;
+
+        --shadow: 211 28% 25%;
+        --shadow-accent: 340 75% 50%;
+        --shadow-highlight: 43 62% 45%;
+
+        color-scheme: light;
+    }
+
+    .dark {
+        --background: 216 32% 9%;
+        --foreground: 210 25% 92%;
+
+        --primary: 216 32% 9%;
+        --primary-100: 216 20% 18%;
+        --secondary: 20 40% 32%;       /* deep terracotta hero */
+        --accent: 344 30% 44%;         /* deep rose */
+
+        --ink: 210 25% 92%;
+        --ink-100: 214 14% 68%;
+        --ink-200: 214 14% 68%;
+        --ink-300: 210 25% 92%;
+        --ink-400: 214 12% 60%;
+
+        --surface: 216 24% 13%;
+        --surface-100: 216 24% 13%;
+
+        /* A 5px border at full ink contrast is right on paper-like light mode
+           but overwhelming on dark, so borders drop to a mid-tone. */
+        --border: 214 16% 34%;
+        --input: 214 16% 34%;
+        --ring: 23 85% 60%;
+
+        --card: 216 24% 13%;
+        --card-foreground: 210 25% 92%;
+        --popover: 216 24% 16%;
+        --popover-foreground: 210 25% 92%;
+        --muted: 216 20% 20%;
+        --muted-foreground: 214 14% 68%;
+        --destructive: 0 62% 50%;
+        --destructive-foreground: 0 0% 100%;
+        --success: 142 45% 42%;
+        --success-foreground: 0 0% 100%;
+
+        --hero-fg: 36 45% 94%;
+
+        --shadow: 216 50% 4%;
+        --shadow-accent: 340 55% 42%;
+        --shadow-highlight: 43 50% 42%;
+
+        color-scheme: dark;
     }
 
     html {
@@ -31,7 +123,7 @@
     }
 
     body {
-        @apply bg-primary;
+        @apply bg-background text-foreground;
     }
 
     /*
@@ -39,7 +131,7 @@
      * unusable by keyboard. This restores one without affecting mouse users.
      */
     :focus-visible {
-        outline: 3px solid theme("colors.black.DEFAULT");
+        outline: 3px solid hsl(var(--ring));
         outline-offset: 2px;
     }
 
@@ -67,7 +159,9 @@
     }
 
     .text-30-extrabold {
-        @apply font-extrabold text-white;
+        /* Was `text-white` (#FFF9F0) but only ever rendered on the cream
+           `.profile_card`, i.e. near-invisible. Uses ink now. */
+        @apply font-extrabold text-black;
         font-size: var(--fs-30);
     }
 
@@ -101,7 +195,8 @@
     }
 
     .text-14-normal {
-        @apply font-normal text-sm text-white-100/80;
+        /* Same problem: a near-white bio on the cream profile card. */
+        @apply font-normal text-sm text-black-100;
     }
 
     .pink_container {
@@ -125,7 +220,9 @@
     }
 
     .sub-heading {
-        @apply font-medium text-white max-w-2xl text-center break-words;
+        /* `text-white` on the orange hero was roughly 1.6:1. `--hero-fg` is
+           dark on light-mode orange and light on dark-mode terracotta. */
+        @apply font-medium text-hero-fg max-w-2xl text-center break-words;
         font-size: var(--fs-subheading);
     }
 
@@ -145,7 +242,8 @@
     }
 
     .no-result {
-        @apply text-white text-sm font-normal;
+        /* Rendered on the page background, where `text-white` was invisible. */
+        @apply text-black-100 text-sm font-normal;
     }
 
     /* profile */
@@ -155,20 +253,20 @@
 
     .profile_card {
         @apply w-full lg:w-80 px-5 sm:px-6 pb-6 pt-20 flex flex-col justify-center items-center
-               bg-primary border-[5px] border-black shadow-100 rounded-[30px] relative z-0 h-fit;
+               bg-primary border-[5px] border-border shadow-100 rounded-[30px] relative z-0 h-fit;
     }
 
     .profile_title {
-        @apply w-11/12 bg-white border-[5px] border-black rounded-[20px] px-5 py-3 absolute -top-9 after:absolute after:content-[''] after:-top-1 after:right-0 after:-skew-y-6 after:bg-black after:-z-[1] after:rounded-[20px] after:w-full after:h-[60px] before:absolute before:content-[''] before:-bottom-1 before:left-0  before:-skew-y-6 before:w-full before:h-[60px] before:bg-black  before:-z-[1] before:rounded-[20px] shadow-100;
+        @apply w-11/12 bg-white border-[5px] border-border rounded-[20px] px-5 py-3 absolute -top-9 after:absolute after:content-[''] after:-top-1 after:right-0 after:-skew-y-6 after:bg-black after:-z-[1] after:rounded-[20px] after:w-full after:h-[60px] before:absolute before:content-[''] before:-bottom-1 before:left-0  before:-skew-y-6 before:w-full before:h-[60px] before:bg-black  before:-z-[1] before:rounded-[20px] shadow-100;
     }
 
     .profile_image {
-        @apply rounded-full object-cover border-[3px] border-black;
+        @apply rounded-full object-cover border-[3px] border-border;
     }
 
     /* idea details */
     .divider {
-        @apply border-t-2 border-dotted border-black bg-transparent max-w-4xl my-8 sm:my-10 mx-auto;
+        @apply border-t-2 border-dotted border-border bg-transparent max-w-4xl my-8 sm:my-10 mx-auto;
     }
 
     .view_skeleton {
@@ -180,7 +278,7 @@
         /* At 320px the old fixed 80px height / 24px text / 5px border left
            almost no room for the input between the pill's rounded ends. */
         @apply max-w-3xl w-full min-h-[56px] sm:min-h-[70px] lg:min-h-[80px]
-               bg-white border-[3px] sm:border-[5px] border-black
+               bg-white border-[3px] sm:border-[5px] border-border
                rounded-full mt-6 sm:mt-8 px-4 sm:px-5
                flex flex-row items-center gap-3 sm:gap-5
                text-base sm:text-xl lg:text-[24px];
@@ -190,17 +288,32 @@
         @apply flex-1 min-w-0 font-bold placeholder:font-semibold placeholder:text-black-100 w-full h-auto outline-none bg-transparent !important;
     }
 
+    /* Ring the whole pill when the inner input is focused, since the input
+       itself has its outline suppressed. */
+    .search-form:focus-within {
+        box-shadow: 0 0 0 4px hsl(var(--ring) / 0.35);
+    }
+
     .search-btn {
-        @apply size-[38px] sm:size-[44px] lg:size-[50px] shrink-0 rounded-full bg-black flex justify-center items-center !important;
+        @apply size-[38px] sm:size-[44px] lg:size-[50px] shrink-0 rounded-full bg-black text-white
+               flex justify-center items-center transition-transform duration-150 ease-snap
+               hover:scale-105 active:scale-95 !important;
     }
 
     /* news card */
     .news-card {
-        @apply bg-white-100 border-[5px] border-black py-5 sm:py-6 px-4 sm:px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-400 hover:bg-primary-100;
+        /* Hover now lifts the card into its own shadow rather than swapping to
+           a gold shadow and a different background — a calmer, more modern
+           read that still keeps the offset-shadow personality. */
+        @apply bg-white-100 border-[5px] border-border py-5 sm:py-6 px-4 sm:px-5 rounded-[22px]
+               shadow-200 transition-[transform,box-shadow,border-color] duration-300 ease-snap
+               hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-lift
+               hover:border-secondary focus-within:-translate-x-[3px]
+               focus-within:-translate-y-[3px] focus-within:shadow-lift;
     }
 
     .news-card_date {
-        @apply font-medium text-sm sm:text-[16px] bg-primary-100 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full group-hover:bg-white-100;
+        @apply font-medium text-sm sm:text-[16px] bg-primary-100 text-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-colors;
     }
 
     .news-card_desc {
@@ -213,15 +326,25 @@
         /* A fixed 164px height letterboxed hard at wide card widths and cropped
            too aggressively at narrow ones. A ratio holds the same framing at
            every column count. */
-        @apply w-full aspect-[16/10] rounded-[10px] border border-black object-cover;
+        @apply w-full aspect-[16/10] rounded-[10px] border border-border object-cover
+               transition-transform duration-500 ease-snap group-hover:scale-[1.03];
+    }
+
+    /* The image sits inside a rounded card; clip the hover zoom to its corners. */
+    .news-card_img-wrap {
+        @apply overflow-hidden rounded-[10px];
     }
 
     .news-card_btn {
-        @apply rounded-full bg-accent border border-black font-medium text-sm sm:text-[16px] text-black px-4 sm:px-5 py-2.5 sm:py-3 !important;
+        @apply rounded-full bg-accent border border-border font-medium text-sm sm:text-[16px]
+               text-black px-4 sm:px-5 py-2.5 sm:py-3 shadow-100
+               transition-all duration-150 ease-snap
+               hover:brightness-105 active:translate-x-[2px] active:translate-y-[2px]
+               active:shadow-none !important;
     }
 
     .news-card_skeleton {
-        @apply w-full h-96 rounded-[22px] bg-zinc-400;
+        @apply w-full h-96 rounded-[22px] bg-muted;
     }
 
     /* news form */
@@ -230,32 +353,43 @@
     }
 
     .news-form_label {
-        @apply font-bold text-[16px] sm:text-[18px] text-white uppercase;
+        /* Was `text-white`, but the form renders on the page background — every
+           label was effectively invisible. */
+        @apply font-bold text-[16px] sm:text-[18px] text-black uppercase tracking-wide;
     }
 
     .news-form_input {
         /* py-7 gave an ~85px tall control on a phone. Note the font-size never
-           drops below 16px: iOS Safari auto-zooms the page on focus below that. */
-        @apply border-[3px] border-black px-4 sm:px-5 py-5 sm:py-7 text-[16px] sm:text-[18px]
-               text-[#949c9e] font-semibold rounded-full mt-3 placeholder:text-black-400 !important;
+           drops below 16px: iOS Safari auto-zooms the page on focus below that.
+           Text was a hardcoded grey (#949c9e) that read as permanently
+           disabled — and was unreadable on a dark surface. */
+        @apply border-[3px] border-border bg-white text-black
+               px-4 sm:px-5 py-5 sm:py-7 text-[16px] sm:text-[18px]
+               font-semibold rounded-full mt-3 placeholder:text-black-400
+               transition-shadow focus-visible:ring-4 focus-visible:ring-ring/35 !important;
     }
 
     .news-form_textarea {
-        @apply border-[3px] border-black p-4 sm:p-5 text-[16px] sm:text-[18px] text-[#949c9e] font-semibold rounded-[20px] mt-3 placeholder:text-black-400 !important;
+        @apply border-[3px] border-border bg-white text-black p-4 sm:p-5
+               text-[16px] sm:text-[18px] font-semibold rounded-[20px] mt-3
+               placeholder:text-black-400 transition-shadow
+               focus-visible:ring-4 focus-visible:ring-ring/35 !important;
     }
 
+    /* Radix injects its own inline-ish styling here, so these stay as explicit
+       declarations — but the colours are variables now, not frozen hex. */
     .news-form_select-trigger {
         display: flex !important;
         width: 100% !important;
         height: auto !important;
-        border: 3px solid #2D3E50 !important;
+        border: 3px solid hsl(var(--border)) !important;
         padding: 1rem 1.25rem !important;
         font-size: 16px !important;
-        color: #2D3E50 !important;
+        color: hsl(var(--ink)) !important;
         font-weight: 600 !important;
         border-radius: 9999px !important;
         margin-top: 0.75rem !important;
-        background-color: #fff !important;
+        background-color: hsl(var(--surface)) !important;
         cursor: pointer !important;
         box-shadow: none !important;
     }
@@ -263,7 +397,7 @@
     .news-form_select-trigger:focus,
     .news-form_select-trigger:focus-visible {
         outline: none !important;
-        box-shadow: 0 0 0 3px rgba(232, 159, 113, 0.5) !important;
+        box-shadow: 0 0 0 4px hsl(var(--ring) / 0.35) !important;
     }
 
     .news-form_select-trigger > span {
@@ -274,20 +408,20 @@
     }
 
     .news-form_select-trigger[data-placeholder] {
-        color: #949c9e !important;
+        color: hsl(var(--ink-400)) !important;
     }
 
     .news-form_file {
         display: block !important;
         width: 100% !important;
-        border: 3px solid #2D3E50 !important;
+        border: 3px solid hsl(var(--border)) !important;
         padding: 0.75rem 1rem !important;
         font-size: 16px !important;
-        color: #6b7280 !important;
+        color: hsl(var(--ink-100)) !important;
         font-weight: 600 !important;
         border-radius: 9999px !important;
         margin-top: 0.75rem !important;
-        background-color: #fff !important;
+        background-color: hsl(var(--surface)) !important;
         cursor: pointer !important;
     }
 
@@ -295,9 +429,9 @@
         margin-right: 0.75rem;
         padding: 0.5rem 1rem;
         border-radius: 9999px;
-        border: 2px solid #2D3E50;
-        background-color: #E89F71;
-        color: #2D3E50;
+        border: 2px solid hsl(var(--border));
+        background-color: hsl(var(--secondary));
+        color: hsl(var(--hero-fg));
         font-weight: 700;
         font-size: 14px;
         cursor: pointer;
@@ -305,13 +439,13 @@
     }
 
     .news-form_file::file-selector-button:hover {
-        background-color: #D9A5B3;
+        background-color: hsl(var(--accent));
     }
 
     .news-form_image-preview {
         margin-top: 1rem;
         border-radius: 20px;
-        border: 3px solid #2D3E50;
+        border: 3px solid hsl(var(--border));
         overflow: hidden;
         width: 100%;
         max-height: 16rem;
@@ -320,11 +454,19 @@
     }
 
     .news-form_error {
-        @apply text-red-500 mt-2 ml-4 sm:ml-5 text-sm sm:text-base;
+        @apply text-destructive font-medium mt-2 ml-4 sm:ml-5 text-sm sm:text-base;
     }
 
     .news-form_btn {
-        @apply bg-primary border-[4px] border-black rounded-full p-4 sm:p-5 min-h-[60px] sm:min-h-[70px] w-full font-bold text-[16px] sm:text-[18px] !important;
+        /* Was `bg-primary` (cream) with the caller forcing `!text-white-100`
+           (also cream) — the label was invisible. Now a solid ink CTA that
+           presses into its own shadow. */
+        @apply bg-black text-white border-[4px] border-border rounded-full
+               p-4 sm:p-5 min-h-[60px] sm:min-h-[70px] w-full
+               font-bold text-[16px] sm:text-[18px] shadow-100
+               transition-all duration-150 ease-snap
+               hover:brightness-110 active:translate-x-[2px] active:translate-y-[2px]
+               active:shadow-none disabled:opacity-60 disabled:cursor-not-allowed !important;
     }
 
     /* view */
@@ -333,19 +475,22 @@
     }
 
     .view-text {
-        @apply font-medium text-sm sm:text-[16px] bg-accent px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg capitalize border border-black;
+        @apply font-medium text-sm sm:text-[16px] bg-accent text-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg capitalize border border-border shadow-100;
     }
 
     .category-tag {
-        @apply font-medium text-sm sm:text-[16px] bg-accent px-3 sm:px-4 py-1.5 sm:py-2 border border-black rounded-full;
+        @apply font-medium text-sm sm:text-[16px] bg-accent text-black px-3 sm:px-4 py-1.5 sm:py-2 border border-border rounded-full;
     }
 
     .pattern {
+        /* The stripe was a fixed yellow that only worked on the light hero.
+           Tying it to the ink colour keeps it legible in both themes and much
+           subtler overall. */
         background-image: linear-gradient(
                 to right,
                 transparent 49.5%,
-                rgba(251, 232, 67, 0.2) 49.5%,
-                rgba(251, 232, 67, 0.6) 50.5%,
+                hsl(var(--hero-fg) / 0.06) 49.5%,
+                hsl(var(--hero-fg) / 0.16) 50.5%,
                 transparent 50.5%
         );
         background-size: 5% 100%;
