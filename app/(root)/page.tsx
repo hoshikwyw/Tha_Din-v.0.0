@@ -1,4 +1,4 @@
-import NewsCard, { StartupTypeCard } from "@/components/NewsCard";
+import NewsCard, { NewsCardType } from "@/components/NewsCard";
 import SearchForm from "@/components/SearchForm";
 import { sanityFetch } from "@/sanity/lib/live";
 import { newsQuery } from "@/sanity/lib/queries";
@@ -41,7 +41,7 @@ export default async function Home({
             screen reader. */}
         {posts?.length > 0 ? (
           <ul className="mt-7 card_grid">
-            {posts.map((post: StartupTypeCard) => (
+            {posts.map((post: NewsCardType) => (
               <NewsCard key={post?._id} post={post} />
             ))}
           </ul>

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import slugify from "slugify";
 import { parseServerActionResponse } from "./utils";
 import { requireAdmin } from "./admin";
-import { categorySchema, formSchema } from "./validation";
+import { categorySchema, newsFormSchema } from "./validation";
 import { writeClient } from "@/sanity/lib/write-client";
 
 export type ActionResponse = {
@@ -26,9 +26,10 @@ const UNAUTHORIZED = {
 const firstZodMessage = (error: z.ZodError) =>
   error.errors[0]?.message ?? "Please check your inputs and try again";
 
-export const createPitch = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  state: any,
+export const createNews = async (
+  // Supplied by `useActionState` as the previous state. Unused here — every
+  // return value is built fresh — but it must stay in the signature.
+  _prevState: ActionResponse,
   form: FormData,
   pitch: string,
 ): Promise<ActionResponse> => {
@@ -40,7 +41,7 @@ export const createPitch = async (
   // called directly with any payload.
   let values;
   try {
-    values = await formSchema.parseAsync({
+    values = await newsFormSchema.parseAsync({
       title: form.get("title"),
       description: form.get("description"),
       category: form.get("category"),
@@ -91,7 +92,7 @@ export const createPitch = async (
   } catch (error) {
     // Log the real error server-side; never serialise it to the client, it can
     // carry the Sanity project id, dataset, and token-scope details.
-    console.error("[createPitch] failed", error);
+    console.error("[createNews] failed", error);
 
     return parseServerActionResponse({
       error: "Could not publish this news item. Please try again.",
@@ -101,8 +102,7 @@ export const createPitch = async (
 };
 
 export const createCategory = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  state: any,
+  _prevState: ActionResponse,
   form: FormData,
 ): Promise<ActionResponse> => {
   const session = await requireAdmin();

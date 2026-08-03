@@ -29,10 +29,10 @@ export default function Error({
       </p>
 
       <div className="mt-8 flex flex-wrap justify-center gap-4">
-        <Button onClick={reset} className="startup-card_btn">
+        <Button onClick={reset} className="news-card_btn">
           Try again
         </Button>
-        <Button asChild className="startup-card_btn !bg-white">
+        <Button asChild className="news-card_btn !bg-white">
           <Link href="/">Back to home</Link>
         </Button>
       </div>

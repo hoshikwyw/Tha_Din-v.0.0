@@ -175,19 +175,6 @@
         @apply bg-zinc-400 h-10 w-24 rounded-lg fixed bottom-3 right-3;
     }
 
-    /* navbar */
-    .avatar {
-        @apply p-0 focus-visible:ring-0 bg-none rounded-full drop-shadow-md !important;
-    }
-
-    .dropdown-menu {
-        @apply w-56 border-[5px] border-black bg-white p-5 rounded-2xl !important;
-    }
-
-    .login {
-        @apply border-[5px] py-4 border-black bg-white text-black relative shadow-100 font-work-sans font-medium hover:shadow-none transition-all duration-500 !important;
-    }
-
     /* searchform */
     .search-form {
         /* At 320px the old fixed 80px height / 24px text / 5px border left
@@ -207,57 +194,57 @@
         @apply size-[38px] sm:size-[44px] lg:size-[50px] shrink-0 rounded-full bg-black flex justify-center items-center !important;
     }
 
-    /* startupcard */
-    .startup-card {
+    /* news card */
+    .news-card {
         @apply bg-white-100 border-[5px] border-black py-5 sm:py-6 px-4 sm:px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-400 hover:bg-primary-100;
     }
 
-    .startup-card_date {
+    .news-card_date {
         @apply font-medium text-sm sm:text-[16px] bg-primary-100 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full group-hover:bg-white-100;
     }
 
-    .startup-card_desc {
+    .news-card_desc {
         /* `break-all` split words mid-letter ("jour|nalism"). `break-words`
            only breaks a word when it genuinely cannot fit. */
         @apply font-normal text-[16px] line-clamp-2 my-3 text-black-100 break-words;
     }
 
-    .startup-card_img {
+    .news-card_img {
         /* A fixed 164px height letterboxed hard at wide card widths and cropped
            too aggressively at narrow ones. A ratio holds the same framing at
            every column count. */
         @apply w-full aspect-[16/10] rounded-[10px] border border-black object-cover;
     }
 
-    .startup-card_btn {
+    .news-card_btn {
         @apply rounded-full bg-accent border border-black font-medium text-sm sm:text-[16px] text-black px-4 sm:px-5 py-2.5 sm:py-3 !important;
     }
 
-    .startup-card_skeleton {
+    .news-card_skeleton {
         @apply w-full h-96 rounded-[22px] bg-zinc-400;
     }
 
-    /* startupform */
-    .startup-form {
+    /* news form */
+    .news-form {
         @apply max-w-2xl mx-auto my-8 sm:my-10 space-y-6 sm:space-y-8 px-4 sm:px-6;
     }
 
-    .startup-form_label {
+    .news-form_label {
         @apply font-bold text-[16px] sm:text-[18px] text-white uppercase;
     }
 
-    .startup-form_input {
+    .news-form_input {
         /* py-7 gave an ~85px tall control on a phone. Note the font-size never
            drops below 16px: iOS Safari auto-zooms the page on focus below that. */
         @apply border-[3px] border-black px-4 sm:px-5 py-5 sm:py-7 text-[16px] sm:text-[18px]
                text-[#949c9e] font-semibold rounded-full mt-3 placeholder:text-black-400 !important;
     }
 
-    .startup-form_textarea {
+    .news-form_textarea {
         @apply border-[3px] border-black p-4 sm:p-5 text-[16px] sm:text-[18px] text-[#949c9e] font-semibold rounded-[20px] mt-3 placeholder:text-black-400 !important;
     }
 
-    .startup-form_select-trigger {
+    .news-form_select-trigger {
         display: flex !important;
         width: 100% !important;
         height: auto !important;
@@ -273,24 +260,24 @@
         box-shadow: none !important;
     }
 
-    .startup-form_select-trigger:focus,
-    .startup-form_select-trigger:focus-visible {
+    .news-form_select-trigger:focus,
+    .news-form_select-trigger:focus-visible {
         outline: none !important;
         box-shadow: 0 0 0 3px rgba(232, 159, 113, 0.5) !important;
     }
 
-    .startup-form_select-trigger > span {
+    .news-form_select-trigger > span {
         font-size: inherit !important;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .startup-form_select-trigger[data-placeholder] {
+    .news-form_select-trigger[data-placeholder] {
         color: #949c9e !important;
     }
 
-    .startup-form_file {
+    .news-form_file {
         display: block !important;
         width: 100% !important;
         border: 3px solid #2D3E50 !important;
@@ -304,7 +291,7 @@
         cursor: pointer !important;
     }
 
-    .startup-form_file::file-selector-button {
+    .news-form_file::file-selector-button {
         margin-right: 0.75rem;
         padding: 0.5rem 1rem;
         border-radius: 9999px;
@@ -317,11 +304,11 @@
         transition: background-color 0.15s ease;
     }
 
-    .startup-form_file::file-selector-button:hover {
+    .news-form_file::file-selector-button:hover {
         background-color: #D9A5B3;
     }
 
-    .startup-form_image-preview {
+    .news-form_image-preview {
         margin-top: 1rem;
         border-radius: 20px;
         border: 3px solid #2D3E50;
@@ -332,15 +319,11 @@
         object-fit: cover;
     }
 
-    .startup-form_error {
+    .news-form_error {
         @apply text-red-500 mt-2 ml-4 sm:ml-5 text-sm sm:text-base;
     }
 
-    .startup-form_editor {
-        @apply mt-3 border-[3px] border-black text-[16px] sm:text-[18px] text-black font-semibold placeholder:text-black-300 !important;
-    }
-
-    .startup-form_btn {
+    .news-form_btn {
         @apply bg-primary border-[4px] border-black rounded-full p-4 sm:p-5 min-h-[60px] sm:min-h-[70px] w-full font-bold text-[16px] sm:text-[18px] !important;
     }
 

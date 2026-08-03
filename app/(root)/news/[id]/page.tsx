@@ -10,7 +10,7 @@ import markdownit from "markdown-it";
 import sanitizeHtml from "sanitize-html";
 import { Skeleton } from "@/components/ui/skeleton";
 import View from "@/components/View";
-import NewsCard, { StartupTypeCard } from "@/components/NewsCard";
+import NewsCard, { NewsCardType } from "@/components/NewsCard";
 
 const md = markdownit();
 
@@ -101,7 +101,7 @@ const NewsDetailPage = async ({
           <div className="max-w-4xl mx-auto">
             <p className="text-30-semibold">Suggest Posts for you</p>
             <ul className="mt-7 card_grid-sm">
-              {suggestPosts.map((suggested: StartupTypeCard) => (
+              {suggestPosts.map((suggested: NewsCardType) => (
                 <NewsCard key={suggested._id} post={suggested} />
               ))}
             </ul>

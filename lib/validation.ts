@@ -11,7 +11,7 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-export const formSchema = z.object({
+export const newsFormSchema = z.object({
   title: z.string().min(3).max(100),
   description: z.string().min(20).max(500),
   category: z.string().min(1, "Please select a category"),

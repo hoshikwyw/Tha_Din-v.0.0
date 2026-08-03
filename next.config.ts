@@ -8,10 +8,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  // Lint errors now fail the build too. Both escape hatches are closed.
   eslint: {
-    // TODO(part 6): flip to false once the remaining `any`s in the form
-    // components and server actions are typed.
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   images: {
     // Previously `hostname: "*"`, which turned the optimiser into an open image

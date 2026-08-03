@@ -14,7 +14,7 @@ export default function NotFound() {
         The story you&apos;re looking for may have been moved or removed.
       </p>
 
-      <Button asChild className="startup-card_btn mt-8">
+      <Button asChild className="news-card_btn mt-8">
         <Link href="/">Browse all news</Link>
       </Button>
     </section>

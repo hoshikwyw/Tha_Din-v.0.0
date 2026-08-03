@@ -9,14 +9,19 @@ import { categorySchema } from "@/lib/validation";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { createCategory } from "@/lib/actions";
+import { createCategory, type ActionResponse } from "@/lib/actions";
+
+const INITIAL_STATE: ActionResponse = { error: "", status: "INITIAL" };
 
 const CategoryForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
   const router = useRouter();
 
-  const handleFormSubmit = async (prevState: any, formData: FormData) => {
+  const handleFormSubmit = async (
+    prevState: ActionResponse,
+    formData: FormData,
+  ): Promise<ActionResponse> => {
     try {
       const values = {
         title: formData.get("title") as string,
@@ -71,43 +76,44 @@ const CategoryForm = () => {
     }
   };
 
-  const [state, formAction, isPending] = useActionState(handleFormSubmit, {
-    error: "",
-    status: "INITIAL",
-  });
+  // `state` is unused: outcomes surface via toasts and the `errors` map.
+  const [, formAction, isPending] = useActionState(
+    handleFormSubmit,
+    INITIAL_STATE,
+  );
 
   return (
     <form action={formAction} className="grid gap-4">
       <div>
-        <label htmlFor="category-title" className="startup-form_label">
+        <label htmlFor="category-title" className="news-form_label">
           Title
         </label>
         <Input
           id="category-title"
           name="title"
-          className="startup-form_input"
+          className="news-form_input"
           required
           placeholder="e.g. Technology"
         />
-        {errors.title && <p className="startup-form_error">{errors.title}</p>}
+        {errors.title && <p className="news-form_error">{errors.title}</p>}
       </div>
       <div>
-        <label htmlFor="category-description" className="startup-form_label">
+        <label htmlFor="category-description" className="news-form_label">
           Description (optional)
         </label>
         <Textarea
           id="category-description"
           name="description"
-          className="startup-form_textarea"
+          className="news-form_textarea"
           placeholder="Short description of this category"
         />
         {errors.description && (
-          <p className="startup-form_error">{errors.description}</p>
+          <p className="news-form_error">{errors.description}</p>
         )}
       </div>
       <Button
         type="submit"
-        className="startup-form_btn !text-white-100"
+        className="news-form_btn !text-white-100"
         disabled={isPending}
       >
         {isPending ? "Saving..." : "Add category"}

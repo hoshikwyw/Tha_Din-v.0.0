@@ -1,5 +1,5 @@
 import { requireAdmin } from '@/lib/admin'
-import StartupForm from '@/components/StartupForm'
+import NewsForm from '@/components/NewsForm'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -7,7 +7,7 @@ import { client } from '@/sanity/lib/client'
 import { CATEGORIES_QUERY } from '@/sanity/lib/queries'
 
 const CreateNewsPage = async () => {
-    // Publishing is admin-only. This mirrors the gate in `createPitch`; the
+    // Publishing is admin-only. This mirrors the gate in `createNews`; the
     // action enforces it too, since a redirect here is only a UI convenience.
     const session = await requireAdmin()
     if (!session) redirect('/')
@@ -31,7 +31,7 @@ const CreateNewsPage = async () => {
                 .
             </p>
         )}
-        <StartupForm categories={categories} />
+        <NewsForm categories={categories} />
     </>
   )
 }

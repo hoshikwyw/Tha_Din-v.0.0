@@ -8,21 +8,21 @@ import { Author, Category, News } from "@/sanity/types";
 import { Skeleton } from "./ui/skeleton";
 import { resolveCategoryTitle, resolveImageUrl } from "@/sanity/lib/image";
 
-export type StartupTypeCard = Omit<News, "author" | "category"> & {
+export type NewsCardType = Omit<News, "author" | "category"> & {
   author?: Author;
   category?: Pick<Category, "_id" | "title" | "slug"> | null;
 };
 
-const NewsCard = ({ post }: { post: StartupTypeCard }) => {
+const NewsCard = ({ post }: { post: NewsCardType }) => {
   const { _createdAt, views, author, title, category, _id, image, description } =
     post;
 
   const categoryTitle = resolveCategoryTitle(category);
 
   return (
-    <li className="startup-card group">
+    <li className="news-card group">
       <div className="flex-between">
-        <p className="startup-card_date">{formatDate(_createdAt)}</p>
+        <p className="news-card_date">{formatDate(_createdAt)}</p>
 
         <div className="flex gap-1.5">
           <EyeIcon className="size-6 text-black" />
@@ -51,11 +51,11 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
       </div>
 
       <Link href={`/news/${_id}`}>
-        <p className="startup-card_desc">{description}</p>
+        <p className="news-card_desc">{description}</p>
         <ImageWithFallback
           src={resolveImageUrl(image, { width: 500, height: 500 })}
           alt={title ?? "News thumbnail"}
-          className="startup-card_img"
+          className="news-card_img"
           width={500}
           height={500}
           // This thumbnail is fluid (`w-full`) inside a 1/2/3-column grid.
@@ -70,7 +70,7 @@ const NewsCard = ({ post }: { post: StartupTypeCard }) => {
         <Link href={`/?query=${categoryTitle?.toLowerCase() ?? ""}`}>
           <p className="text-16-medium">{categoryTitle}</p>
         </Link>
-        <Button className="startup-card_btn" asChild>
+        <Button className="news-card_btn" asChild>
           <Link href={`/news/${_id}`}>Details</Link>
         </Button>
       </div>
@@ -82,7 +82,7 @@ export const NewsCardSkeleton = () => (
   <>
     {[0, 1, 2, 3, 4].map((index) => (
       <li key={index}>
-        <Skeleton className="startup-card_skeleton" />
+        <Skeleton className="news-card_skeleton" />
       </li>
     ))}
   </>
